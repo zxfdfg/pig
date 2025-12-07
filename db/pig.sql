@@ -373,6 +373,26 @@ INSERT INTO `sys_menu` VALUES (9062, '修改', NULL, 'codegen_group_edit', NULL,
 INSERT INTO `sys_menu` VALUES (9063, '删除', NULL, 'codegen_group_del', NULL, 9059, NULL, '0', 0, '0', '0', '1', 'admin', '2023-02-21 15:09:02', ' ', NULL, '0');
 INSERT INTO `sys_menu` VALUES (9064, '导出', NULL, 'codegen_group_export', NULL, 9059, NULL, '0', 0, '0', '0', '1', 'admin', '2023-02-21 15:09:22', ' ', NULL, '0');
 INSERT INTO `sys_menu` VALUES (9065, '字段管理', 'field', NULL, '/gen/field-type/index', 9050, 'iconfont icon-fuwenben', '1', 0, '0', '0', '0', 'admin', '2023-02-23 20:05:09', 'admin', '2023-07-05 10:27:31', '0');
+-- 分销管理模块
+INSERT INTO `sys_menu` VALUES (3000, '分销管理', 'distribution', NULL, '/distribution', -1, 'ele-Share', '1', 2, '0', '0', '0', 'admin', '2025-12-07 12:00:00', 'admin', '2025-12-07 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (3100, '分销商管理', 'distributor', NULL, '/distribution/distributor/index', 3000, 'ele-User', '1', 1, '0', '0', '0', 'admin', '2025-12-07 12:00:00', 'admin', '2025-12-07 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (3101, '分销商查询', NULL, 'dist_distributor_view', NULL, 3100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3102, '分销商新增', NULL, 'dist_distributor_add', NULL, 3100, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3103, '分销商修改', NULL, 'dist_distributor_edit', NULL, 3100, NULL, '1', 2, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3104, '分销商删除', NULL, 'dist_distributor_del', NULL, 3100, NULL, '1', 3, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3105, '分销商导出', NULL, 'dist_distributor_export', NULL, 3100, NULL, '1', 4, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3200, '佣金管理', 'commission', NULL, '/distribution/commission/index', 3000, 'ele-Money', '1', 2, '0', '0', '0', 'admin', '2025-12-07 12:00:00', 'admin', '2025-12-07 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (3201, '佣金查询', NULL, 'dist_commission_view', NULL, 3200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3202, '佣金导出', NULL, 'dist_commission_export', NULL, 3200, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3300, '提现管理', 'withdraw', NULL, '/distribution/withdraw/index', 3000, 'ele-Wallet', '1', 3, '0', '0', '0', 'admin', '2025-12-07 12:00:00', 'admin', '2025-12-07 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (3301, '提现查询', NULL, 'dist_withdraw_view', NULL, 3300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3302, '提现审核', NULL, 'dist_withdraw_audit', NULL, 3300, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3303, '提现导出', NULL, 'dist_withdraw_export', NULL, 3300, NULL, '1', 2, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3400, '佣金配置', 'config', NULL, '/distribution/config/index', 3000, 'ele-Setting', '1', 4, '0', '0', '0', 'admin', '2025-12-07 12:00:00', 'admin', '2025-12-07 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (3401, '配置查询', NULL, 'dist_config_view', NULL, 3400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3402, '配置新增', NULL, 'dist_config_add', NULL, 3400, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3403, '配置修改', NULL, 'dist_config_edit', NULL, 3400, NULL, '1', 2, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (3404, '配置删除', NULL, 'dist_config_del', NULL, 3400, NULL, '1', 3, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
 COMMIT;
 
 -- ----------------------------
@@ -593,6 +613,26 @@ INSERT INTO `sys_role_menu` VALUES (1, 9062);
 INSERT INTO `sys_role_menu` VALUES (1, 9063);
 INSERT INTO `sys_role_menu` VALUES (1, 9064);
 INSERT INTO `sys_role_menu` VALUES (1, 9065);
+-- 分销管理模块权限
+INSERT INTO `sys_role_menu` VALUES (1, 3000);
+INSERT INTO `sys_role_menu` VALUES (1, 3100);
+INSERT INTO `sys_role_menu` VALUES (1, 3101);
+INSERT INTO `sys_role_menu` VALUES (1, 3102);
+INSERT INTO `sys_role_menu` VALUES (1, 3103);
+INSERT INTO `sys_role_menu` VALUES (1, 3104);
+INSERT INTO `sys_role_menu` VALUES (1, 3105);
+INSERT INTO `sys_role_menu` VALUES (1, 3200);
+INSERT INTO `sys_role_menu` VALUES (1, 3201);
+INSERT INTO `sys_role_menu` VALUES (1, 3202);
+INSERT INTO `sys_role_menu` VALUES (1, 3300);
+INSERT INTO `sys_role_menu` VALUES (1, 3301);
+INSERT INTO `sys_role_menu` VALUES (1, 3302);
+INSERT INTO `sys_role_menu` VALUES (1, 3303);
+INSERT INTO `sys_role_menu` VALUES (1, 3400);
+INSERT INTO `sys_role_menu` VALUES (1, 3401);
+INSERT INTO `sys_role_menu` VALUES (1, 3402);
+INSERT INTO `sys_role_menu` VALUES (1, 3403);
+INSERT INTO `sys_role_menu` VALUES (1, 3404);
 INSERT INTO `sys_role_menu` VALUES (2, 4000);
 INSERT INTO `sys_role_menu` VALUES (2, 4001);
 INSERT INTO `sys_role_menu` VALUES (2, 4002);
@@ -1098,3 +1138,166 @@ CREATE TABLE `gen_template_group` (
 ) ENGINE=InnoDB  COMMENT='模板分组关联表';
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ========================================
+-- 分销系统数据库表结构
+-- ========================================
+
+-- 1. 分销商表
+DROP TABLE IF EXISTS `dist_distributor`;
+CREATE TABLE `dist_distributor` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `parent_id` BIGINT DEFAULT NULL COMMENT '上级分销商ID',
+  `level` INT DEFAULT 1 COMMENT '分销商等级：1-普通 2-铜牌 3-银牌 4-金牌 5-钻石',
+  `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用 1-启用 2-待审核',
+  `total_sales` DECIMAL(10,2) DEFAULT 0.00 COMMENT '累计销售额',
+  `total_commission` DECIMAL(10,2) DEFAULT 0.00 COMMENT '累计佣金',
+  `available_commission` DECIMAL(10,2) DEFAULT 0.00 COMMENT '可提现佣金',
+  `frozen_commission` DECIMAL(10,2) DEFAULT 0.00 COMMENT '冻结佣金',
+  `withdrawn_commission` DECIMAL(10,2) DEFAULT 0.00 COMMENT '已提现佣金',
+  `direct_count` INT DEFAULT 0 COMMENT '直推人数',
+  `team_count` INT DEFAULT 0 COMMENT '团队总人数',
+  `real_name` VARCHAR(50) DEFAULT NULL COMMENT '真实姓名',
+  `phone` VARCHAR(20) DEFAULT NULL COMMENT '联系电话',
+  `id_card` VARCHAR(50) DEFAULT NULL COMMENT '身份证号',
+  `apply_time` DATETIME DEFAULT NULL COMMENT '申请时间',
+  `audit_time` DATETIME DEFAULT NULL COMMENT '审核时间',
+  `del_flag` TINYINT DEFAULT 0 COMMENT '删除标记：0-正常 1-删除',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_id` (`user_id`),
+  KEY `idx_parent_id` (`parent_id`),
+  KEY `idx_level` (`level`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分销商表';
+
+-- 2. 分销关系表
+DROP TABLE IF EXISTS `dist_relation`;
+CREATE TABLE `dist_relation` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `distributor_id` BIGINT NOT NULL COMMENT '分销商ID',
+  `ancestor_id` BIGINT NOT NULL COMMENT '上级分销商ID',
+  `level` INT NOT NULL COMMENT '层级：1-直接上级 2-二级上级 3-三级上级',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_distributor_ancestor` (`distributor_id`, `ancestor_id`),
+  KEY `idx_distributor_id` (`distributor_id`),
+  KEY `idx_ancestor_id` (`ancestor_id`),
+  KEY `idx_level` (`level`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分销关系表（闭包表）';
+
+-- 3. 佣金配置表
+DROP TABLE IF EXISTS `dist_commission_config`;
+CREATE TABLE `dist_commission_config` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` VARCHAR(100) NOT NULL COMMENT '配置名称',
+  `level` INT NOT NULL COMMENT '分销层级：1-一级 2-二级 3-三级',
+  `commission_rate` DECIMAL(5,2) NOT NULL COMMENT '佣金比例(%)',
+  `distributor_level` INT DEFAULT 0 COMMENT '分销商等级：0-全部 1-普通 2-铜牌 3-银牌 4-金牌 5-钻石',
+  `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_level` (`level`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='佣金配置表';
+
+-- 4. 订单佣金表
+DROP TABLE IF EXISTS `dist_order_commission`;
+CREATE TABLE `dist_order_commission` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_id` BIGINT NOT NULL COMMENT '订单ID',
+  `order_no` VARCHAR(50) NOT NULL COMMENT '订单号',
+  `distributor_id` BIGINT NOT NULL COMMENT '分销商ID',
+  `buyer_id` BIGINT NOT NULL COMMENT '购买者ID',
+  `level` INT NOT NULL COMMENT '分销层级',
+  `order_amount` DECIMAL(10,2) NOT NULL COMMENT '订单金额',
+  `commission_rate` DECIMAL(5,2) NOT NULL COMMENT '佣金比例',
+  `commission_amount` DECIMAL(10,2) NOT NULL COMMENT '佣金金额',
+  `status` TINYINT DEFAULT 0 COMMENT '状态：0-待结算 1-已结算 2-已取消',
+  `settle_time` DATETIME DEFAULT NULL COMMENT '结算时间',
+  `cancel_time` DATETIME DEFAULT NULL COMMENT '取消时间',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_order_id` (`order_id`),
+  KEY `idx_order_no` (`order_no`),
+  KEY `idx_distributor_id` (`distributor_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单佣金表';
+
+-- 5. 提现记录表
+DROP TABLE IF EXISTS `dist_withdraw`;
+CREATE TABLE `dist_withdraw` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `withdraw_no` VARCHAR(50) NOT NULL COMMENT '提现单号',
+  `distributor_id` BIGINT NOT NULL COMMENT '分销商ID',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT '提现金额',
+  `fee` DECIMAL(10,2) DEFAULT 0.00 COMMENT '手续费',
+  `actual_amount` DECIMAL(10,2) NOT NULL COMMENT '实际到账金额',
+  `account_type` TINYINT NOT NULL COMMENT '账户类型：1-支付宝 2-微信 3-银行卡',
+  `account_no` VARCHAR(100) NOT NULL COMMENT '账户号',
+  `account_name` VARCHAR(50) NOT NULL COMMENT '账户名',
+  `bank_name` VARCHAR(100) DEFAULT NULL COMMENT '银行名称',
+  `status` TINYINT DEFAULT 0 COMMENT '状态：0-待审核 1-审核通过 2-已打款 3-已拒绝',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  `reject_reason` VARCHAR(500) DEFAULT NULL COMMENT '拒绝原因',
+  `audit_user` VARCHAR(50) DEFAULT NULL COMMENT '审核人',
+  `audit_time` DATETIME DEFAULT NULL COMMENT '审核时间',
+  `pay_time` DATETIME DEFAULT NULL COMMENT '打款时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_withdraw_no` (`withdraw_no`),
+  KEY `idx_distributor_id` (`distributor_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='提现记录表';
+
+-- 6. 佣金流水表
+DROP TABLE IF EXISTS `dist_commission_log`;
+CREATE TABLE `dist_commission_log` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `distributor_id` BIGINT NOT NULL COMMENT '分销商ID',
+  `type` TINYINT NOT NULL COMMENT '类型：1-佣金收入 2-提现支出 3-冻结 4-解冻 5-取消',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT '金额',
+  `before_amount` DECIMAL(10,2) NOT NULL COMMENT '变动前金额',
+  `after_amount` DECIMAL(10,2) NOT NULL COMMENT '变动后金额',
+  `order_id` BIGINT DEFAULT NULL COMMENT '关联订单ID',
+  `withdraw_id` BIGINT DEFAULT NULL COMMENT '关联提现ID',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_distributor_id` (`distributor_id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='佣金流水表';
+
+-- ----------------------------
+-- Records of dist_commission_config
+-- ----------------------------
+BEGIN;
+INSERT INTO `dist_commission_config` (`name`, `level`, `commission_rate`, `distributor_level`, `status`, `remark`) VALUES
+('一级分销-普通会员', 1, 10.00, 0, 1, '一级分销商基础佣金'),
+('二级分销-普通会员', 2, 5.00, 0, 1, '二级分销商基础佣金'),
+('三级分销-普通会员', 3, 2.00, 0, 1, '三级分销商基础佣金');
+COMMIT;
