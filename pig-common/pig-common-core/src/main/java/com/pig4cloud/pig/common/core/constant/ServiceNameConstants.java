@@ -18,18 +18,28 @@ package com.pig4cloud.pig.common.core.constant;
 
 /**
  * @author lengleng
- * @date 2018年06月22日16:41:01 服务名称
+ * @date 2018年6月22日16:41:01 服务名称
  */
 public interface ServiceNameConstants {
 
-	/**
-	 * 认证服务的SERVICEID
-	 */
-	String AUTH_SERVICE = "pig-auth";
+/**
+ * 认证服务的SERVICEID
+ */
+String AUTH_SERVICE = "pig-auth";
 
-	/**
-	 * UPMS模块
-	 */
-	String UPMS_SERVICE = "pig-upms-biz";
+/**
+ * UPMS模块
+ */
+String UPMS_SERVICE = "pig-upms-biz";
+
+/**
+ * 分销服务
+ */
+String DISTRIBUTION_SERVICE = "pig-distribution-biz";
+
+/**
+ * 商品服务
+ */
+String PRODUCT_SERVICE = "pig-product-biz";
 
 }

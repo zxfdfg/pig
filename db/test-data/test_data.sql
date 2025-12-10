@@ -477,3 +477,208 @@ SELECT CONCAT('草稿商品: ', COUNT(*)) AS info FROM product WHERE status = 0;
 SELECT CONCAT('售罄商品: ', COUNT(*)) AS info FROM product WHERE status = 3;
 SELECT '' AS '';
 SELECT '💡 提示: 商品管理系统测试数据已就绪' AS info;
+
+
+-- ========================================
+-- 商城系统测试数据
+-- 用于开发环境测试
+-- ========================================
+
+-- ========================================
+-- 清空现有商城测试数据
+-- ========================================
+DELETE FROM shop_logistics_trace;
+DELETE FROM shop_logistics;
+DELETE FROM shop_payment;
+DELETE FROM shop_order_item;
+DELETE FROM shop_order;
+DELETE FROM shop_cart;
+DELETE FROM shop_address;
+
+-- 重置自增ID
+ALTER TABLE shop_logistics_trace AUTO_INCREMENT = 1;
+ALTER TABLE shop_logistics AUTO_INCREMENT = 1;
+ALTER TABLE shop_payment AUTO_INCREMENT = 1;
+ALTER TABLE shop_order_item AUTO_INCREMENT = 1;
+ALTER TABLE shop_order AUTO_INCREMENT = 1;
+ALTER TABLE shop_cart AUTO_INCREMENT = 1;
+ALTER TABLE shop_address AUTO_INCREMENT = 1;
+
+-- ========================================
+-- 1. 创建收货地址（admin 用户）
+-- ========================================
+
+INSERT INTO `shop_address` 
+(`user_id`, `receiver_name`, `receiver_phone`, `province`, `city`, `district`, `address`, `is_default`, `create_by`) 
+VALUES 
+(1, '张三', '13800138000', '广东省', '深圳市', '南山区', '科技园南区深圳湾科技生态园10栋A座2001', 1, 'admin'),
+(1, '李四', '13900139000', '北京市', '北京市', '朝阳区', '望京SOHO T3 A座1501', 0, 'admin'),
+(1, '王五', '13700137000', '上海市', '上海市', '浦东新区', '陆家嘴环路1000号恒生银行大厦20楼', 0, 'admin');
+
+-- ========================================
+-- 2. 创建购物车（admin 用户）
+-- ========================================
+
+INSERT INTO `shop_cart` 
+(`user_id`, `sku_id`, `product_id`, `quantity`, `selected`) 
+VALUES 
+(1, 1, 7, 1, 1),  -- 罗技机械键盘-青轴
+(1, 4, 8, 2, 1),  -- 保温杯-500ml
+(1, 0, 6, 1, 0);  -- 小米无线鼠标（无SKU）
+
+-- ========================================
+-- 3. 创建订单（admin 用户）
+-- ========================================
+
+-- 待支付订单
+INSERT INTO `shop_order` 
+(`order_no`, `user_id`, `distributor_id`, `total_amount`, `pay_amount`, `discount_amount`, `status`, `pay_status`, 
+ `receiver_name`, `receiver_phone`, `receiver_province`, `receiver_city`, `receiver_district`, `receiver_address`, 
+ `remark`, `create_by`) 
+VALUES 
+('ORDER20251210001', 1, 2, 999.00, 999.00, 0.00, 0, 0, 
+ '张三', '13800138000', '广东省', '深圳市', '南山区', '科技园南区深圳湾科技生态园10栋A座2001', 
+ '请尽快发货', 'admin');
+
+-- 订单明细
+INSERT INTO `shop_order_item` 
+(`order_id`, `order_no`, `product_id`, `product_name`, `product_image`, `sku_id`, `sku_name`, `sku_attrs`, 
+ `price`, `quantity`, `total_amount`, `commission_amount`, `create_by`) 
+VALUES 
+(1, 'ORDER20251210001', 1, '王者荣耀60元点券', '/images/products/wzry-60.jpg', 0, NULL, NULL, 
+ 58.00, 10, 580.00, 58.00, 'admin'),
+(1, 'ORDER20251210001', 7, '罗技机械键盘', '/images/products/logitech-keyboard.jpg', 1, '罗技机械键盘-青轴', '{"轴体":"青轴","颜色":"黑色"}', 
+ 399.00, 1, 399.00, 31.92, 'admin');
+
+-- 已支付待发货订单
+INSERT INTO `shop_order` 
+(`order_no`, `user_id`, `distributor_id`, `total_amount`, `pay_amount`, `discount_amount`, `status`, `pay_status`, 
+ `pay_time`, `pay_type`, `receiver_name`, `receiver_phone`, `receiver_province`, `receiver_city`, `receiver_district`, `receiver_address`, 
+ `create_by`) 
+VALUES 
+('ORDER20251209001', 1, 2, 2598.00, 2598.00, 0.00, 1, 1, 
+ '2025-12-09 15:30:00', 1, '张三', '13800138000', '广东省', '深圳市', '南山区', '科技园南区深圳湾科技生态园10栋A座2001', 
+ 'admin');
+
+INSERT INTO `shop_order_item` 
+(`order_id`, `order_no`, `product_id`, `product_name`, `product_image`, `sku_id`, `sku_name`, `sku_attrs`, 
+ `price`, `quantity`, `total_amount`, `commission_amount`, `create_by`) 
+VALUES 
+(2, 'ORDER20251209001', 2, '和平精英98元点券', '/images/products/hpjy-98.jpg', 0, NULL, NULL, 
+ 95.00, 10, 950.00, 95.00, 'admin'),
+(2, 'ORDER20251209001', 8, '保温杯304不锈钢', '/images/products/thermos.jpg', 4, '保温杯-500ml', '{"容量":"500ml","颜色":"白色"}', 
+ 89.00, 2, 178.00, 14.24, 'admin'),
+(2, 'ORDER20251209001', 7, '罗技机械键盘', '/images/products/logitech-keyboard.jpg', 2, '罗技机械键盘-红轴', '{"轴体":"红轴","颜色":"黑色"}', 
+ 399.00, 3, 1197.00, 95.76, 'admin');
+
+-- 支付记录
+INSERT INTO `shop_payment` 
+(`payment_no`, `order_no`, `user_id`, `pay_amount`, `pay_type`, `status`, `trade_no`, `pay_time`, `create_by`) 
+VALUES 
+('PAY20251209001', 'ORDER20251209001', 1, 2598.00, 1, 1, 'WX20251209001234567890', '2025-12-09 15:30:00', 'admin');
+
+-- 已发货待收货订单
+INSERT INTO `shop_order` 
+(`order_no`, `user_id`, `distributor_id`, `total_amount`, `pay_amount`, `discount_amount`, `status`, `pay_status`, 
+ `pay_time`, `pay_type`, `receiver_name`, `receiver_phone`, `receiver_province`, `receiver_city`, `receiver_district`, `receiver_address`, 
+ `create_by`) 
+VALUES 
+('ORDER20251208001', 1, 2, 487.00, 487.00, 0.00, 2, 1, 
+ '2025-12-08 10:20:00', 2, '李四', '13900139000', '北京市', '北京市', '朝阳区', '望京SOHO T3 A座1501', 
+ 'admin');
+
+INSERT INTO `shop_order_item` 
+(`order_id`, `order_no`, `product_id`, `product_name`, `product_image`, `sku_id`, `sku_name`, `sku_attrs`, 
+ `price`, `quantity`, `total_amount`, `commission_amount`, `create_by`) 
+VALUES 
+(3, 'ORDER20251208001', 4, 'Office 365家庭版年卡', '/images/products/office365.jpg', 0, NULL, NULL, 
+ 398.00, 1, 398.00, 47.76, 'admin'),
+(3, 'ORDER20251208001', 8, '保温杯304不锈钢', '/images/products/thermos.jpg', 4, '保温杯-500ml', '{"容量":"500ml","颜色":"白色"}', 
+ 89.00, 1, 89.00, 7.12, 'admin');
+
+INSERT INTO `shop_payment` 
+(`payment_no`, `order_no`, `user_id`, `pay_amount`, `pay_type`, `status`, `trade_no`, `pay_time`, `create_by`) 
+VALUES 
+('PAY20251208001', 'ORDER20251208001', 1, 487.00, 2, 1, 'ALI20251208001234567890', '2025-12-08 10:20:00', 'admin');
+
+-- 物流信息
+INSERT INTO `shop_logistics` 
+(`order_id`, `order_no`, `logistics_company`, `logistics_no`, `status`, `ship_time`, `create_by`) 
+VALUES 
+(3, 'ORDER20251208001', '顺丰速运', 'SF1234567890123', 2, '2025-12-08 16:00:00', 'admin');
+
+-- 物流轨迹
+INSERT INTO `shop_logistics_trace` 
+(`logistics_id`, `content`, `trace_time`) 
+VALUES 
+(1, '【深圳市】快件已发出，正在运输途中', '2025-12-08 16:00:00'),
+(1, '【深圳市】快件已到达【深圳转运中心】', '2025-12-08 20:00:00'),
+(1, '【北京市】快件已到达【北京转运中心】', '2025-12-09 08:00:00'),
+(1, '【北京市】快件正在派送中，快递员：张师傅，电话：13812345678', '2025-12-09 14:00:00');
+
+-- 已完成订单
+INSERT INTO `shop_order` 
+(`order_no`, `user_id`, `distributor_id`, `total_amount`, `pay_amount`, `discount_amount`, `status`, `pay_status`, 
+ `pay_time`, `pay_type`, `receiver_name`, `receiver_phone`, `receiver_province`, `receiver_city`, `receiver_district`, `receiver_address`, 
+ `create_by`) 
+VALUES 
+('ORDER20251207001', 1, 2, 630.00, 630.00, 0.00, 3, 1, 
+ '2025-12-07 09:15:00', 1, '张三', '13800138000', '广东省', '深圳市', '南山区', '科技园南区深圳湾科技生态园10栋A座2001', 
+ 'admin');
+
+INSERT INTO `shop_order_item` 
+(`order_id`, `order_no`, `product_id`, `product_name`, `product_image`, `sku_id`, `sku_name`, `sku_attrs`, 
+ `price`, `quantity`, `total_amount`, `commission_amount`, `create_by`) 
+VALUES 
+(4, 'ORDER20251207001', 3, '原神648元创世结晶', '/images/products/ys-648.jpg', 0, NULL, NULL, 
+ 630.00, 1, 630.00, 94.50, 'admin');
+
+INSERT INTO `shop_payment` 
+(`payment_no`, `order_no`, `user_id`, `pay_amount`, `pay_type`, `status`, `trade_no`, `pay_time`, `create_by`) 
+VALUES 
+('PAY20251207001', 'ORDER20251207001', 1, 630.00, 1, 1, 'WX20251207001234567890', '2025-12-07 09:15:00', 'admin');
+
+INSERT INTO `shop_logistics` 
+(`order_id`, `order_no`, `logistics_company`, `logistics_no`, `status`, `ship_time`, `receive_time`, `create_by`) 
+VALUES 
+(4, 'ORDER20251207001', '虚拟商品', 'VIRTUAL', 4, '2025-12-07 09:16:00', '2025-12-07 09:16:00', 'admin');
+
+-- 已取消订单
+INSERT INTO `shop_order` 
+(`order_no`, `user_id`, `distributor_id`, `total_amount`, `pay_amount`, `discount_amount`, `status`, `pay_status`, 
+ `receiver_name`, `receiver_phone`, `receiver_province`, `receiver_city`, `receiver_district`, `receiver_address`, 
+ `cancel_reason`, `cancel_time`, `create_by`) 
+VALUES 
+('ORDER20251206001', 1, NULL, 399.00, 399.00, 0.00, 4, 0, 
+ '王五', '13700137000', '上海市', '上海市', '浦东新区', '陆家嘴环路1000号恒生银行大厦20楼', 
+ '不想要了', '2025-12-06 15:30:00', 'admin');
+
+INSERT INTO `shop_order_item` 
+(`order_id`, `order_no`, `product_id`, `product_name`, `product_image`, `sku_id`, `sku_name`, `sku_attrs`, 
+ `price`, `quantity`, `total_amount`, `commission_amount`, `create_by`) 
+VALUES 
+(5, 'ORDER20251206001', 7, '罗技机械键盘', '/images/products/logitech-keyboard.jpg', 3, '罗技机械键盘-茶轴', '{"轴体":"茶轴","颜色":"白色"}', 
+ 419.00, 1, 419.00, 33.52, 'admin');
+
+-- ========================================
+-- 商城测试数据创建完成
+-- ========================================
+
+SELECT '✅ 商城测试数据创建完成！' AS message;
+SELECT '📊 商城数据统计:' AS '';
+SELECT CONCAT('收货地址数量: ', COUNT(*)) AS info FROM shop_address;
+SELECT CONCAT('购物车商品数量: ', COUNT(*)) AS info FROM shop_cart;
+SELECT CONCAT('订单数量: ', COUNT(*)) AS info FROM shop_order;
+SELECT CONCAT('订单明细数量: ', COUNT(*)) AS info FROM shop_order_item;
+SELECT CONCAT('支付记录数量: ', COUNT(*)) AS info FROM shop_payment;
+SELECT CONCAT('物流信息数量: ', COUNT(*)) AS info FROM shop_logistics;
+SELECT CONCAT('物流轨迹数量: ', COUNT(*)) AS info FROM shop_logistics_trace;
+SELECT '' AS '';
+SELECT '🎯 订单状态分布:' AS '';
+SELECT CONCAT('待支付订单: ', COUNT(*)) AS info FROM shop_order WHERE status = 0;
+SELECT CONCAT('待发货订单: ', COUNT(*)) AS info FROM shop_order WHERE status = 1;
+SELECT CONCAT('待收货订单: ', COUNT(*)) AS info FROM shop_order WHERE status = 2;
+SELECT CONCAT('已完成订单: ', COUNT(*)) AS info FROM shop_order WHERE status = 3;
+SELECT CONCAT('已取消订单: ', COUNT(*)) AS info FROM shop_order WHERE status = 4;
+SELECT '' AS '';
+SELECT '💡 提示: admin 用户的商城数据已就绪，可以测试购物流程' AS info;

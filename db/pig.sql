@@ -1580,3 +1580,186 @@ INSERT INTO `sys_role_menu` VALUES (1, 5702);
 INSERT INTO `sys_role_menu` VALUES (1, 5800);
 INSERT INTO `sys_role_menu` VALUES (1, 5801);
 INSERT INTO `sys_role_menu` VALUES (1, 5802);
+
+
+-- ========================================
+-- 商城系统表结构
+-- ========================================
+
+-- ----------------------------
+-- Table structure for shop_cart
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_cart`;
+CREATE TABLE `shop_cart` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `sku_id` BIGINT NOT NULL COMMENT 'SKU ID',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `quantity` INT NOT NULL DEFAULT 1 COMMENT '数量',
+  `selected` TINYINT NOT NULL DEFAULT 1 COMMENT '是否选中：0-否，1-是',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_sku_id` (`sku_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车表';
+
+-- ----------------------------
+-- Table structure for shop_order
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_order`;
+CREATE TABLE `shop_order` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_no` VARCHAR(32) NOT NULL COMMENT '订单号',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `distributor_id` BIGINT DEFAULT NULL COMMENT '推荐分销商ID',
+  `total_amount` DECIMAL(10,2) NOT NULL COMMENT '订单总金额',
+  `pay_amount` DECIMAL(10,2) NOT NULL COMMENT '实付金额',
+  `discount_amount` DECIMAL(10,2) DEFAULT 0.00 COMMENT '优惠金额',
+  `status` TINYINT NOT NULL DEFAULT 0 COMMENT '订单状态：0-待支付，1-已支付，2-已发货，3-已完成，4-已取消，5-已退款',
+  `pay_status` TINYINT NOT NULL DEFAULT 0 COMMENT '支付状态：0-未支付，1-已支付，2-已退款',
+  `pay_time` DATETIME DEFAULT NULL COMMENT '支付时间',
+  `pay_type` TINYINT DEFAULT NULL COMMENT '支付方式：1-微信，2-支付宝，3-余额',
+  `receiver_name` VARCHAR(64) NOT NULL COMMENT '收货人姓名',
+  `receiver_phone` VARCHAR(20) NOT NULL COMMENT '收货人电话',
+  `receiver_province` VARCHAR(32) DEFAULT NULL COMMENT '省份',
+  `receiver_city` VARCHAR(32) DEFAULT NULL COMMENT '城市',
+  `receiver_district` VARCHAR(32) DEFAULT NULL COMMENT '区县',
+  `receiver_address` VARCHAR(255) NOT NULL COMMENT '详细地址',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '订单备注',
+  `cancel_reason` VARCHAR(255) DEFAULT NULL COMMENT '取消原因',
+  `cancel_time` DATETIME DEFAULT NULL COMMENT '取消时间',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_order_no` (`order_no`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_distributor_id` (`distributor_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单主表';
+
+-- ----------------------------
+-- Table structure for shop_order_item
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_order_item`;
+CREATE TABLE `shop_order_item` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_id` BIGINT NOT NULL COMMENT '订单ID',
+  `order_no` VARCHAR(32) NOT NULL COMMENT '订单号',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `product_name` VARCHAR(255) NOT NULL COMMENT '商品名称',
+  `product_image` VARCHAR(500) DEFAULT NULL COMMENT '商品图片',
+  `sku_id` BIGINT NOT NULL COMMENT 'SKU ID',
+  `sku_name` VARCHAR(255) DEFAULT NULL COMMENT 'SKU名称',
+  `sku_attrs` VARCHAR(500) DEFAULT NULL COMMENT 'SKU属性JSON',
+  `price` DECIMAL(10,2) NOT NULL COMMENT '商品单价',
+  `quantity` INT NOT NULL COMMENT '购买数量',
+  `total_amount` DECIMAL(10,2) NOT NULL COMMENT '小计金额',
+  `commission_amount` DECIMAL(10,2) DEFAULT 0.00 COMMENT '佣金金额',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_order_id` (`order_id`),
+  KEY `idx_order_no` (`order_no`),
+  KEY `idx_product_id` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单明细表';
+
+-- ----------------------------
+-- Table structure for shop_payment
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_payment`;
+CREATE TABLE `shop_payment` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `payment_no` VARCHAR(32) NOT NULL COMMENT '支付单号',
+  `order_no` VARCHAR(32) NOT NULL COMMENT '订单号',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `pay_amount` DECIMAL(10,2) NOT NULL COMMENT '支付金额',
+  `pay_type` TINYINT NOT NULL COMMENT '支付方式：1-微信，2-支付宝，3-余额',
+  `status` TINYINT NOT NULL DEFAULT 0 COMMENT '支付状态：0-待支付，1-支付成功，2-支付失败，3-已退款',
+  `trade_no` VARCHAR(64) DEFAULT NULL COMMENT '第三方交易号',
+  `pay_time` DATETIME DEFAULT NULL COMMENT '支付时间',
+  `refund_time` DATETIME DEFAULT NULL COMMENT '退款时间',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_payment_no` (`payment_no`),
+  KEY `idx_order_no` (`order_no`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付记录表';
+
+-- ----------------------------
+-- Table structure for shop_logistics
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_logistics`;
+CREATE TABLE `shop_logistics` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_id` BIGINT NOT NULL COMMENT '订单ID',
+  `order_no` VARCHAR(32) NOT NULL COMMENT '订单号',
+  `logistics_company` VARCHAR(64) DEFAULT NULL COMMENT '物流公司',
+  `logistics_no` VARCHAR(64) DEFAULT NULL COMMENT '物流单号',
+  `status` TINYINT NOT NULL DEFAULT 0 COMMENT '物流状态：0-待发货，1-已发货，2-运输中，3-派送中，4-已签收',
+  `ship_time` DATETIME DEFAULT NULL COMMENT '发货时间',
+  `receive_time` DATETIME DEFAULT NULL COMMENT '签收时间',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_order_id` (`order_id`),
+  KEY `idx_order_no` (`order_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物流信息表';
+
+-- ----------------------------
+-- Table structure for shop_logistics_trace
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_logistics_trace`;
+CREATE TABLE `shop_logistics_trace` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `logistics_id` BIGINT NOT NULL COMMENT '物流ID',
+  `content` VARCHAR(500) NOT NULL COMMENT '轨迹内容',
+  `trace_time` DATETIME NOT NULL COMMENT '轨迹时间',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_logistics_id` (`logistics_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物流轨迹表';
+
+-- ----------------------------
+-- Table structure for shop_address
+-- ----------------------------
+DROP TABLE IF EXISTS `shop_address`;
+CREATE TABLE `shop_address` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `receiver_name` VARCHAR(64) NOT NULL COMMENT '收货人姓名',
+  `receiver_phone` VARCHAR(20) NOT NULL COMMENT '收货人电话',
+  `province` VARCHAR(32) NOT NULL COMMENT '省份',
+  `city` VARCHAR(32) NOT NULL COMMENT '城市',
+  `district` VARCHAR(32) NOT NULL COMMENT '区县',
+  `address` VARCHAR(255) NOT NULL COMMENT '详细地址',
+  `is_default` TINYINT NOT NULL DEFAULT 0 COMMENT '是否默认：0-否，1-是',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收货地址表';

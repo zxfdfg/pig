@@ -109,4 +109,16 @@ public class CommissionController {
 		return R.ok(commissionService.settleCommission(commissionId));
 	}
 
+	/**
+	 * 取消订单佣金（内部接口）
+	 * @param orderId 订单ID
+	 * @return 是否成功
+	 */
+	@SysLog("取消订单佣金")
+	@PostMapping("/cancel")
+	@Operation(summary = "取消订单佣金")
+	public R<Boolean> cancel(@RequestParam Long orderId) {
+		return R.ok(commissionService.cancelCommission(orderId));
+	}
+
 }
