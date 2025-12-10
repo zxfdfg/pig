@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pig4cloud.pig.product.mapper.CommissionConfigMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.pig4cloud.pig.product.api.entity.ProductCommissionConfig">
+		<id column="id" property="id"/>
+		<result column="product_id" property="productId"/>
+		<result column="category_id" property="categoryId"/>
+		<result column="level1_rate" property="level1Rate"/>
+		<result column="level2_rate" property="level2Rate"/>
+		<result column="level3_rate" property="level3Rate"/>
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="create_by" property="createBy"/>
+	</resultMap>
+
+	<!-- 查询商品的佣金配置 -->
+	<select id="getConfigByProductId" resultMap="baseResultMap">
+		SELECT * FROM product_commission_config
+		WHERE product_id = #{productId}
+		AND status = 1
+		ORDER BY create_time DESC
+		LIMIT 1
+	</select>
+
+	<!-- 查询分类的默认佣金配置 -->
+	<select id="getConfigByCategoryId" resultMap="baseResultMap">
+		SELECT * FROM product_commission_config
+		WHERE category_id = #{categoryId}
+		AND product_id IS NULL
+		AND status = 1
+		ORDER BY create_time DESC
+		LIMIT 1
+	</select>
+
+	<!-- 查询商品或分类的佣金配置（优先商品配置） -->
+	<select id="getEffectiveConfig" resultMap="baseResultMap">
+		SELECT * FROM product_commission_config
+		WHERE (product_id = #{productId} OR (category_id = #{categoryId} AND product_id IS NULL))
+		AND status = 1
+		ORDER BY product_id DESC, create_time DESC
+		LIMIT 1
+	</select>
+
+	<!-- 查询所有启用的佣金配置 -->
+	<select id="listEnabledConfigs" resultMap="baseResultMap">
+		SELECT * FROM product_commission_config
+		WHERE status = 1
+		<if test="productId != null">
+			AND product_id = #{productId}
+		</if>
+		<if test="categoryId != null">
+			AND category_id = #{categoryId}
+		</if>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 统计分类下的平均佣金率 -->
+	<select id="getAvgCommissionRateByCategoryId" resultType="java.math.BigDecimal">
+		SELECT AVG((level1_rate + level2_rate + level3_rate) / 3) 
+		FROM product_commission_config
+		WHERE category_id = #{categoryId}
+		AND status = 1
+	</select>
+
+</mapper>

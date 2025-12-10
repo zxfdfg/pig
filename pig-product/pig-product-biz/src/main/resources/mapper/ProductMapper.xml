@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pig4cloud.pig.product.mapper.ProductMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.pig4cloud.pig.product.api.entity.Product">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="category_id" property="categoryId"/>
+		<result column="type" property="type"/>
+		<result column="cover_image" property="coverImage"/>
+		<result column="images" property="images"/>
+		<result column="description" property="description"/>
+		<result column="detail" property="detail"/>
+		<result column="price" property="price"/>
+		<result column="cost_price" property="costPrice"/>
+		<result column="market_price" property="marketPrice"/>
+		<result column="stock" property="stock"/>
+		<result column="stock_warning" property="stockWarning"/>
+		<result column="sales" property="sales"/>
+		<result column="status" property="status"/>
+		<result column="sort" property="sort"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="del_flag" property="delFlag"/>
+	</resultMap>
+
+	<!-- 商品查询SQL -->
+	<sql id="productQuerySql">
+		SELECT * FROM product p
+		<where>
+			p.del_flag = 0
+			<if test="query.id != null">
+				AND p.id = #{query.id}
+			</if>
+			<if test="query.name != null and query.name != ''">
+				<bind name="nameLike" value="'%'+query.name+'%'"/>
+				AND p.name LIKE #{nameLike}
+			</if>
+			<if test="query.categoryId != null">
+				AND p.category_id = #{query.categoryId}
+			</if>
+			<if test="query.type != null">
+				AND p.type = #{query.type}
+			</if>
+			<if test="query.status != null">
+				AND p.status = #{query.status}
+			</if>
+			<if test="query.minPrice != null">
+				AND p.price &gt;= #{query.minPrice}
+			</if>
+			<if test="query.maxPrice != null">
+				AND p.price &lt;= #{query.maxPrice}
+			</if>
+		</where>
+		ORDER BY p.sort DESC, p.create_time DESC
+	</sql>
+
+	<!-- 分页查询商品 -->
+	<select id="getProductPage" resultMap="baseResultMap">
+		<include refid="productQuerySql"/>
+	</select>
+
+	<!-- 查询商品列表 -->
+	<select id="listProducts" resultMap="baseResultMap">
+		<include refid="productQuerySql"/>
+	</select>
+
+	<!-- 查询商品详情 -->
+	<select id="getProductById" resultMap="baseResultMap">
+		SELECT * FROM product
+		WHERE id = #{id} AND del_flag = 0
+	</select>
+
+	<!-- 查询分类下的商品（包含子分类） -->
+	<select id="listProductsByCategoryIds" resultMap="baseResultMap">
+		SELECT * FROM product
+		WHERE category_id IN
+		<foreach collection="categoryIds" item="categoryId" open="(" separator="," close=")">
+			#{categoryId}
+		</foreach>
+		AND del_flag = 0
+		ORDER BY sort DESC, create_time DESC
+	</select>
+
+	<!-- 查询低库存商品 -->
+	<select id="listLowStockProducts" resultMap="baseResultMap">
+		SELECT * FROM product
+		WHERE stock &lt; stock_warning
+		AND status = 1
+		AND del_flag = 0
+		ORDER BY stock ASC
+	</select>
+
+	<!-- 查询售罄商品 -->
+	<select id="listSoldOutProducts" resultMap="baseResultMap">
+		SELECT * FROM product
+		WHERE stock = 0
+		AND del_flag = 0
+		ORDER BY update_time DESC
+	</select>
+
+	<!-- 统计商品数量 -->
+	<select id="countByStatus" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM product
+		WHERE status = #{status}
+		AND del_flag = 0
+	</select>
+
+	<!-- 统计分类下的商品数量 -->
+	<select id="countByCategoryId" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM product
+		WHERE category_id = #{categoryId}
+		AND del_flag = 0
+	</select>
+
+</mapper>

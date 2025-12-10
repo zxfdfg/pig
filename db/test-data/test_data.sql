@@ -255,3 +255,225 @@ SELECT CONCAT('admin 的提现记录: ', COUNT(*)) AS info FROM dist_withdraw WH
 SELECT CONCAT('admin 的佣金流水: ', COUNT(*)) AS info FROM dist_commission_log WHERE distributor_id = 1;
 SELECT '' AS '';
 SELECT '💡 提示: 使用 admin/admin 登录即可查看佣金和提现数据' AS info;
+
+
+-- ========================================
+-- 商品管理系统测试数据
+-- 用于开发环境测试
+-- ========================================
+
+-- ========================================
+-- 清空现有商品测试数据
+-- ========================================
+DELETE FROM product_price_history;
+DELETE FROM product_commission_config;
+DELETE FROM product_stock_log;
+DELETE FROM product_cdkey;
+DELETE FROM product_sku;
+DELETE FROM product;
+
+-- 重置自增ID
+ALTER TABLE product_price_history AUTO_INCREMENT = 1;
+ALTER TABLE product_commission_config AUTO_INCREMENT = 1;
+ALTER TABLE product_stock_log AUTO_INCREMENT = 1;
+ALTER TABLE product_cdkey AUTO_INCREMENT = 1;
+ALTER TABLE product_sku AUTO_INCREMENT = 1;
+ALTER TABLE product AUTO_INCREMENT = 1;
+
+-- ========================================
+-- 1. 创建测试商品
+-- ========================================
+
+-- 虚拟商品 - 游戏点卡
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(1, '王者荣耀60元点券', 3, 1, '/images/products/wzry-60.jpg', '王者荣耀官方充值卡，60元面值', 58.00, 55.00, 60.00, 1000, 50, 150, 1, 1, 'admin'),
+(2, '和平精英98元点券', 3, 1, '/images/products/hpjy-98.jpg', '和平精英官方充值卡，98元面值', 95.00, 92.00, 98.00, 800, 50, 80, 1, 2, 'admin'),
+(3, '原神648元创世结晶', 3, 1, '/images/products/ys-648.jpg', '原神官方充值，648元创世结晶', 630.00, 620.00, 648.00, 500, 30, 200, 1, 3, 'admin');
+
+-- 虚拟商品 - 软件激活码
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(4, 'Office 365家庭版年卡', 4, 1, '/images/products/office365.jpg', 'Microsoft Office 365家庭版，支持6人使用', 398.00, 350.00, 498.00, 200, 20, 50, 1, 4, 'admin'),
+(5, 'Adobe Creative Cloud年卡', 4, 1, '/images/products/adobe-cc.jpg', 'Adobe全家桶年卡，包含PS/AI/PR等', 1980.00, 1800.00, 2388.00, 100, 10, 30, 1, 5, 'admin');
+
+-- 实物商品 - 电子产品
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(6, '小米无线鼠标', 5, 0, '/images/products/mi-mouse.jpg', '小米无线鼠标，人体工学设计', 49.00, 35.00, 69.00, 500, 50, 120, 1, 6, 'admin'),
+(7, '罗技机械键盘', 5, 0, '/images/products/logitech-keyboard.jpg', '罗技机械键盘，青轴', 399.00, 300.00, 499.00, 200, 20, 45, 1, 7, 'admin');
+
+-- 实物商品 - 日用百货
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(8, '保温杯304不锈钢', 6, 0, '/images/products/thermos.jpg', '304不锈钢保温杯，500ml', 89.00, 60.00, 129.00, 300, 30, 80, 1, 8, 'admin'),
+(9, 'USB充电台灯', 6, 0, '/images/products/desk-lamp.jpg', 'LED护眼台灯，USB充电', 79.00, 50.00, 99.00, 400, 40, 60, 1, 9, 'admin');
+
+-- 草稿状态商品
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(10, '测试商品-草稿', 6, 0, NULL, '这是一个草稿状态的商品', 99.00, 80.00, 120.00, 0, 10, 0, 0, 10, 'admin');
+
+-- 售罄状态商品
+INSERT INTO `product` 
+(`id`, `name`, `category_id`, `type`, `cover_image`, `description`, `price`, `cost_price`, `market_price`, `stock`, `stock_warning`, `sales`, `status`, `sort`, `create_by`) 
+VALUES 
+(11, '热销商品-已售罄', 5, 0, '/images/products/sold-out.jpg', '这是一个已售罄的商品', 199.00, 150.00, 249.00, 0, 10, 500, 3, 11, 'admin');
+
+-- ========================================
+-- 2. 创建测试SKU
+-- ========================================
+
+-- 罗技机械键盘的SKU（不同轴体）
+INSERT INTO `product_sku` 
+(`product_id`, `sku_code`, `sku_name`, `attributes`, `price`, `cost_price`, `stock`, `status`, `create_by`) 
+VALUES 
+(7, 'LOGITECH-KB-BLUE', '罗技机械键盘-青轴', '{"轴体":"青轴","颜色":"黑色"}', 399.00, 300.00, 80, 1, 'admin'),
+(7, 'LOGITECH-KB-RED', '罗技机械键盘-红轴', '{"轴体":"红轴","颜色":"黑色"}', 399.00, 300.00, 70, 1, 'admin'),
+(7, 'LOGITECH-KB-BROWN', '罗技机械键盘-茶轴', '{"轴体":"茶轴","颜色":"白色"}', 419.00, 310.00, 50, 1, 'admin');
+
+-- 保温杯的SKU（不同容量）
+INSERT INTO `product_sku` 
+(`product_id`, `sku_code`, `sku_name`, `attributes`, `price`, `cost_price`, `stock`, `status`, `create_by`) 
+VALUES 
+(8, 'THERMOS-500ML', '保温杯-500ml', '{"容量":"500ml","颜色":"白色"}', 89.00, 60.00, 150, 1, 'admin'),
+(8, 'THERMOS-750ML', '保温杯-750ml', '{"容量":"750ml","颜色":"黑色"}', 109.00, 75.00, 100, 1, 'admin'),
+(8, 'THERMOS-1000ML', '保温杯-1000ml', '{"容量":"1000ml","颜色":"蓝色"}', 129.00, 90.00, 50, 1, 'admin');
+
+-- ========================================
+-- 3. 创建测试CDKEY
+-- ========================================
+
+-- 王者荣耀60元点券的CDKEY
+INSERT INTO `product_cdkey` 
+(`product_id`, `cdkey`, `status`, `commission_level1`, `commission_level2`, `commission_level3`, `create_by`) 
+VALUES 
+(1, 'WZRY60-AAAA-BBBB-CCCC-0001', 0, 10.00, 5.00, 2.00, 'admin'),
+(1, 'WZRY60-AAAA-BBBB-CCCC-0002', 0, 10.00, 5.00, 2.00, 'admin'),
+(1, 'WZRY60-AAAA-BBBB-CCCC-0003', 0, 10.00, 5.00, 2.00, 'admin'),
+(1, 'WZRY60-AAAA-BBBB-CCCC-0004', 1, 10.00, 5.00, 2.00, 'admin'),
+(1, 'WZRY60-AAAA-BBBB-CCCC-0005', 1, 10.00, 5.00, 2.00, 'admin');
+
+-- 和平精英98元点券的CDKEY
+INSERT INTO `product_cdkey` 
+(`product_id`, `cdkey`, `status`, `commission_level1`, `commission_level2`, `commission_level3`, `create_by`) 
+VALUES 
+(2, 'HPJY98-DDDD-EEEE-FFFF-0001', 0, 10.00, 5.00, 2.00, 'admin'),
+(2, 'HPJY98-DDDD-EEEE-FFFF-0002', 0, 10.00, 5.00, 2.00, 'admin'),
+(2, 'HPJY98-DDDD-EEEE-FFFF-0003', 1, 10.00, 5.00, 2.00, 'admin');
+
+-- Office 365的CDKEY
+INSERT INTO `product_cdkey` 
+(`product_id`, `cdkey`, `status`, `commission_level1`, `commission_level2`, `commission_level3`, `create_by`) 
+VALUES 
+(4, 'OFFICE365-GGGG-HHHH-IIII-0001', 0, 12.00, 6.00, 3.00, 'admin'),
+(4, 'OFFICE365-GGGG-HHHH-IIII-0002', 0, 12.00, 6.00, 3.00, 'admin'),
+(4, 'OFFICE365-GGGG-HHHH-IIII-0003', 1, 12.00, 6.00, 3.00, 'admin');
+
+-- ========================================
+-- 4. 创建库存日志
+-- ========================================
+
+-- 商品入库记录
+INSERT INTO `product_stock_log` 
+(`product_id`, `type`, `quantity`, `before_stock`, `after_stock`, `remark`, `create_by`) 
+VALUES 
+(1, 1, 1000, 0, 1000, '初始入库', 'admin'),
+(2, 1, 800, 0, 800, '初始入库', 'admin'),
+(6, 1, 500, 0, 500, '初始入库', 'admin');
+
+-- 订单扣减记录
+INSERT INTO `product_stock_log` 
+(`product_id`, `type`, `quantity`, `before_stock`, `after_stock`, `order_id`, `remark`, `create_by`) 
+VALUES 
+(1, 3, -10, 1000, 990, 1001, '订单扣减', 'system'),
+(2, 3, -5, 800, 795, 1002, '订单扣减', 'system'),
+(6, 3, -20, 500, 480, 1003, '订单扣减', 'system');
+
+-- 订单退回记录
+INSERT INTO `product_stock_log` 
+(`product_id`, `type`, `quantity`, `before_stock`, `after_stock`, `order_id`, `remark`, `create_by`) 
+VALUES 
+(1, 4, 2, 990, 992, 1001, '订单退款退回库存', 'system');
+
+-- ========================================
+-- 5. 创建商品佣金配置
+-- ========================================
+
+-- 游戏点卡分类的默认佣金配置
+INSERT INTO `product_commission_config` 
+(`category_id`, `level1_rate`, `level2_rate`, `level3_rate`, `status`, `create_by`) 
+VALUES 
+(3, 10.00, 5.00, 2.00, 1, 'admin');
+
+-- 软件激活码分类的默认佣金配置
+INSERT INTO `product_commission_config` 
+(`category_id`, `level1_rate`, `level2_rate`, `level3_rate`, `status`, `create_by`) 
+VALUES 
+(4, 12.00, 6.00, 3.00, 1, 'admin');
+
+-- 电子产品分类的默认佣金配置
+INSERT INTO `product_commission_config` 
+(`category_id`, `level1_rate`, `level2_rate`, `level3_rate`, `status`, `create_by`) 
+VALUES 
+(5, 8.00, 4.00, 2.00, 1, 'admin');
+
+-- 原神648的独立佣金配置（高佣金）
+INSERT INTO `product_commission_config` 
+(`product_id`, `level1_rate`, `level2_rate`, `level3_rate`, `status`, `create_by`) 
+VALUES 
+(3, 15.00, 8.00, 4.00, 1, 'admin');
+
+-- Adobe CC的独立佣金配置（高佣金）
+INSERT INTO `product_commission_config` 
+(`product_id`, `level1_rate`, `level2_rate`, `level3_rate`, `status`, `create_by`) 
+VALUES 
+(5, 18.00, 10.00, 5.00, 1, 'admin');
+
+-- ========================================
+-- 6. 创建价格变更历史
+-- ========================================
+
+-- 王者荣耀点券价格调整
+INSERT INTO `product_price_history` 
+(`product_id`, `old_price`, `new_price`, `change_reason`, `create_by`) 
+VALUES 
+(1, 60.00, 58.00, '促销活动降价', 'admin');
+
+-- 罗技键盘价格调整
+INSERT INTO `product_price_history` 
+(`product_id`, `old_price`, `new_price`, `change_reason`, `create_by`) 
+VALUES 
+(7, 449.00, 399.00, '新品上市优惠', 'admin');
+
+-- 保温杯价格调整
+INSERT INTO `product_price_history` 
+(`product_id`, `old_price`, `new_price`, `change_reason`, `create_by`) 
+VALUES 
+(8, 99.00, 89.00, '清仓促销', 'admin');
+
+-- ========================================
+-- 商品测试数据创建完成
+-- ========================================
+
+SELECT '✅ 商品测试数据创建完成！' AS message;
+SELECT '📊 商品数据统计:' AS '';
+SELECT CONCAT('商品数量: ', COUNT(*)) AS info FROM product;
+SELECT CONCAT('商品分类数量: ', COUNT(*)) AS info FROM product_category;
+SELECT CONCAT('SKU数量: ', COUNT(*)) AS info FROM product_sku;
+SELECT CONCAT('CDKEY数量: ', COUNT(*)) AS info FROM product_cdkey;
+SELECT CONCAT('库存日志数量: ', COUNT(*)) AS info FROM product_stock_log;
+SELECT CONCAT('佣金配置数量: ', COUNT(*)) AS info FROM product_commission_config;
+SELECT CONCAT('价格历史数量: ', COUNT(*)) AS info FROM product_price_history;
+SELECT '' AS '';
+SELECT '🎯 商品状态分布:' AS '';
+SELECT CONCAT('上架商品: ', COUNT(*)) AS info FROM product WHERE status = 1;
+SELECT CONCAT('草稿商品: ', COUNT(*)) AS info FROM product WHERE status = 0;
+SELECT CONCAT('售罄商品: ', COUNT(*)) AS info FROM product WHERE status = 3;
+SELECT '' AS '';
+SELECT '💡 提示: 商品管理系统测试数据已就绪' AS info;

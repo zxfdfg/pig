@@ -1301,3 +1301,282 @@ INSERT INTO `dist_commission_config` (`name`, `level`, `commission_rate`, `distr
 ('二级分销-普通会员', 2, 5.00, 0, 1, '二级分销商基础佣金'),
 ('三级分销-普通会员', 3, 2.00, 0, 1, '三级分销商基础佣金');
 COMMIT;
+
+-- ----------------------------
+-- Table structure for product
+-- ----------------------------
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '商品ID',
+  `name` VARCHAR(200) NOT NULL COMMENT '商品名称',
+  `category_id` BIGINT NOT NULL COMMENT '分类ID',
+  `type` TINYINT NOT NULL DEFAULT 0 COMMENT '商品类型：0-实物商品，1-虚拟商品',
+  `cover_image` VARCHAR(500) DEFAULT NULL COMMENT '封面图片',
+  `images` TEXT DEFAULT NULL COMMENT '商品图片（JSON数组）',
+  `description` TEXT DEFAULT NULL COMMENT '商品描述',
+  `detail` LONGTEXT DEFAULT NULL COMMENT '商品详情（富文本）',
+  `price` DECIMAL(10,2) NOT NULL COMMENT '商品价格',
+  `cost_price` DECIMAL(10,2) DEFAULT NULL COMMENT '成本价',
+  `market_price` DECIMAL(10,2) DEFAULT NULL COMMENT '市场价',
+  `stock` INT NOT NULL DEFAULT 0 COMMENT '库存数量',
+  `stock_warning` INT DEFAULT 10 COMMENT '库存预警值',
+  `sales` INT NOT NULL DEFAULT 0 COMMENT '销量',
+  `status` TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-草稿，1-上架，2-下架，3-售罄',
+  `sort` INT DEFAULT 0 COMMENT '排序',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_category_id` (`category_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_type` (`type`),
+  KEY `idx_del_flag` (`del_flag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品表';
+
+-- ----------------------------
+-- Table structure for product_category
+-- ----------------------------
+DROP TABLE IF EXISTS `product_category`;
+CREATE TABLE `product_category` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '分类ID',
+  `parent_id` BIGINT NOT NULL DEFAULT 0 COMMENT '父分类ID，0表示顶级分类',
+  `name` VARCHAR(100) NOT NULL COMMENT '分类名称',
+  `icon` VARCHAR(500) DEFAULT NULL COMMENT '分类图标',
+  `description` VARCHAR(500) DEFAULT NULL COMMENT '分类描述',
+  `sort` INT DEFAULT 0 COMMENT '排序',
+  `level` TINYINT NOT NULL DEFAULT 1 COMMENT '层级：1-一级，2-二级，3-三级',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_parent_id` (`parent_id`),
+  KEY `idx_del_flag` (`del_flag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品分类表';
+
+-- ----------------------------
+-- Records of product_category
+-- ----------------------------
+BEGIN;
+INSERT INTO `product_category` (`id`, `parent_id`, `name`, `icon`, `description`, `sort`, `level`, `create_by`) VALUES
+(1, 0, '数字商品', NULL, '虚拟商品分类', 1, 1, 'admin'),
+(2, 0, '实物商品', NULL, '实物商品分类', 2, 1, 'admin'),
+(3, 1, '游戏点卡', NULL, '游戏充值卡', 1, 2, 'admin'),
+(4, 1, '软件激活码', NULL, '软件授权码', 2, 2, 'admin'),
+(5, 2, '电子产品', NULL, '电子数码产品', 1, 2, 'admin'),
+(6, 2, '日用百货', NULL, '日常用品', 2, 2, 'admin');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for product_sku
+-- ----------------------------
+DROP TABLE IF EXISTS `product_sku`;
+CREATE TABLE `product_sku` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'SKU ID',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `sku_code` VARCHAR(100) NOT NULL COMMENT 'SKU编码',
+  `sku_name` VARCHAR(200) DEFAULT NULL COMMENT 'SKU名称',
+  `attributes` JSON DEFAULT NULL COMMENT 'SKU属性（JSON）',
+  `price` DECIMAL(10,2) NOT NULL COMMENT 'SKU价格',
+  `cost_price` DECIMAL(10,2) DEFAULT NULL COMMENT 'SKU成本价',
+  `stock` INT NOT NULL DEFAULT 0 COMMENT 'SKU库存',
+  `image` VARCHAR(500) DEFAULT NULL COMMENT 'SKU图片',
+  `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  `del_flag` TINYINT NOT NULL DEFAULT 0 COMMENT '删除标记：0-正常，1-删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_sku_code` (`sku_code`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_del_flag` (`del_flag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品SKU表';
+
+-- ----------------------------
+-- Table structure for product_cdkey
+-- ----------------------------
+DROP TABLE IF EXISTS `product_cdkey`;
+CREATE TABLE `product_cdkey` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'CDKEY ID',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `cdkey` VARCHAR(200) NOT NULL COMMENT 'CDKEY码',
+  `status` TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-未使用，1-已使用，2-已过期',
+  `distributor_id` BIGINT DEFAULT NULL COMMENT '推广分销商ID',
+  `order_id` BIGINT DEFAULT NULL COMMENT '订单ID',
+  `user_id` BIGINT DEFAULT NULL COMMENT '使用用户ID',
+  `used_time` DATETIME DEFAULT NULL COMMENT '使用时间',
+  `expire_time` DATETIME DEFAULT NULL COMMENT '过期时间',
+  `commission_level1` DECIMAL(5,2) DEFAULT NULL COMMENT '一级佣金比例',
+  `commission_level2` DECIMAL(5,2) DEFAULT NULL COMMENT '二级佣金比例',
+  `commission_level3` DECIMAL(5,2) DEFAULT NULL COMMENT '三级佣金比例',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_cdkey` (`cdkey`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_distributor_id` (`distributor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品CDKEY表';
+
+-- ----------------------------
+-- Table structure for product_stock_log
+-- ----------------------------
+DROP TABLE IF EXISTS `product_stock_log`;
+CREATE TABLE `product_stock_log` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `sku_id` BIGINT DEFAULT NULL COMMENT 'SKU ID',
+  `type` TINYINT NOT NULL COMMENT '类型：1-入库，2-出库，3-订单扣减，4-订单退回',
+  `quantity` INT NOT NULL COMMENT '数量（正数为增加，负数为减少）',
+  `before_stock` INT NOT NULL COMMENT '操作前库存',
+  `after_stock` INT NOT NULL COMMENT '操作后库存',
+  `order_id` BIGINT DEFAULT NULL COMMENT '关联订单ID',
+  `remark` VARCHAR(500) DEFAULT NULL COMMENT '备注',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '操作人',
+  PRIMARY KEY (`id`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_order_id` (`order_id`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库存日志表';
+
+-- ----------------------------
+-- Table structure for product_commission_config
+-- ----------------------------
+DROP TABLE IF EXISTS `product_commission_config`;
+CREATE TABLE `product_commission_config` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '配置ID',
+  `product_id` BIGINT DEFAULT NULL COMMENT '商品ID（NULL表示分类默认配置）',
+  `category_id` BIGINT DEFAULT NULL COMMENT '分类ID（NULL表示商品独立配置）',
+  `level1_rate` DECIMAL(5,2) NOT NULL COMMENT '一级佣金比例（%）',
+  `level2_rate` DECIMAL(5,2) NOT NULL COMMENT '二级佣金比例（%）',
+  `level3_rate` DECIMAL(5,2) NOT NULL COMMENT '三级佣金比例（%）',
+  `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  `update_by` VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  PRIMARY KEY (`id`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_category_id` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品佣金配置表';
+
+-- ----------------------------
+-- Table structure for product_price_history
+-- ----------------------------
+DROP TABLE IF EXISTS `product_price_history`;
+CREATE TABLE `product_price_history` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '历史ID',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID',
+  `sku_id` BIGINT DEFAULT NULL COMMENT 'SKU ID',
+  `old_price` DECIMAL(10,2) NOT NULL COMMENT '原价格',
+  `new_price` DECIMAL(10,2) NOT NULL COMMENT '新价格',
+  `change_reason` VARCHAR(500) DEFAULT NULL COMMENT '变更原因',
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '变更时间',
+  `create_by` VARCHAR(64) DEFAULT NULL COMMENT '操作人',
+  PRIMARY KEY (`id`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='价格变更历史表';
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- 商品管理模块菜单
+-- ----------------------------
+INSERT INTO `sys_menu` VALUES (4000, '商品管理', 'product', NULL, '/product', -1, 'ele-Goods', '1', 3, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+
+-- 商品列表
+INSERT INTO `sys_menu` VALUES (4100, '商品列表', 'product-list', NULL, '/product/product/index', 4000, 'ele-List', '1', 1, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4101, '商品查询', NULL, 'product_product_view', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4102, '商品新增', NULL, 'product_product_add', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4103, '商品修改', NULL, 'product_product_edit', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4104, '商品删除', NULL, 'product_product_del', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4105, '商品上下架', NULL, 'product_product_status', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- 分类管理
+INSERT INTO `sys_menu` VALUES (4200, '分类管理', 'category', NULL, '/product/category/index', 4000, 'ele-FolderOpened', '1', 2, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4201, '分类查询', NULL, 'product_category_view', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4202, '分类新增', NULL, 'product_category_add', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4203, '分类修改', NULL, 'product_category_edit', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4204, '分类删除', NULL, 'product_category_del', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- SKU管理
+INSERT INTO `sys_menu` VALUES (4300, 'SKU管理', 'sku', NULL, '/product/sku/index', 4000, 'ele-Grid', '1', 3, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4301, 'SKU查询', NULL, 'product_sku_view', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4302, 'SKU新增', NULL, 'product_sku_add', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4303, 'SKU修改', NULL, 'product_sku_edit', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4304, 'SKU删除', NULL, 'product_sku_del', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- 库存管理
+INSERT INTO `sys_menu` VALUES (4400, '库存管理', 'stock', NULL, '/product/stock/index', 4000, 'ele-Box', '1', 4, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4401, '库存查询', NULL, 'product_stock_view', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4402, '库存增加', NULL, 'product_stock_increase', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4403, '库存减少', NULL, 'product_stock_decrease', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- CDKEY管理
+INSERT INTO `sys_menu` VALUES (4500, 'CDKEY管理', 'cdkey', NULL, '/product/cdkey/index', 4000, 'ele-Key', '1', 5, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4501, 'CDKEY查询', NULL, 'product_cdkey_view', NULL, 4500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4502, 'CDKEY导入', NULL, 'product_cdkey_import', NULL, 4500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- 佣金配置
+INSERT INTO `sys_menu` VALUES (4600, '佣金配置', 'commission', NULL, '/product/commission/index', 4000, 'ele-Money', '1', 6, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4601, '佣金查询', NULL, 'product_commission_view', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4602, '佣金新增', NULL, 'product_commission_add', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4603, '佣金修改', NULL, 'product_commission_edit', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4604, '佣金删除', NULL, 'product_commission_del', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- 统计分析
+INSERT INTO `sys_menu` VALUES (4700, '统计分析', 'statistics', NULL, '/product/statistics/index', 4000, 'ele-DataAnalysis', '1', 7, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4701, '统计查询', NULL, 'product_statistics_view', NULL, 4700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4702, '数据导出', NULL, 'product_statistics_export', NULL, 4700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- 分销商商品
+INSERT INTO `sys_menu` VALUES (4800, '分销商品', 'distributor-product', NULL, '/product/distributor/index', 4000, 'ele-ShoppingCart', '1', 8, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (4801, '商品查询', NULL, 'product_distributor_view', NULL, 4800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (4802, '生成推广链接', NULL, 'product_distributor_link', NULL, 4800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+
+-- ----------------------------
+-- 商品管理模块权限（管理员角色）
+-- ----------------------------
+INSERT INTO `sys_role_menu` VALUES (1, 4000);
+INSERT INTO `sys_role_menu` VALUES (1, 4100);
+INSERT INTO `sys_role_menu` VALUES (1, 4101);
+INSERT INTO `sys_role_menu` VALUES (1, 4102);
+INSERT INTO `sys_role_menu` VALUES (1, 4103);
+INSERT INTO `sys_role_menu` VALUES (1, 4104);
+INSERT INTO `sys_role_menu` VALUES (1, 4105);
+INSERT INTO `sys_role_menu` VALUES (1, 4200);
+INSERT INTO `sys_role_menu` VALUES (1, 4201);
+INSERT INTO `sys_role_menu` VALUES (1, 4202);
+INSERT INTO `sys_role_menu` VALUES (1, 4203);
+INSERT INTO `sys_role_menu` VALUES (1, 4204);
+INSERT INTO `sys_role_menu` VALUES (1, 4300);
+INSERT INTO `sys_role_menu` VALUES (1, 4301);
+INSERT INTO `sys_role_menu` VALUES (1, 4302);
+INSERT INTO `sys_role_menu` VALUES (1, 4303);
+INSERT INTO `sys_role_menu` VALUES (1, 4304);
+INSERT INTO `sys_role_menu` VALUES (1, 4400);
+INSERT INTO `sys_role_menu` VALUES (1, 4401);
+INSERT INTO `sys_role_menu` VALUES (1, 4402);
+INSERT INTO `sys_role_menu` VALUES (1, 4403);
+INSERT INTO `sys_role_menu` VALUES (1, 4500);
+INSERT INTO `sys_role_menu` VALUES (1, 4501);
+INSERT INTO `sys_role_menu` VALUES (1, 4502);
+INSERT INTO `sys_role_menu` VALUES (1, 4600);
+INSERT INTO `sys_role_menu` VALUES (1, 4601);
+INSERT INTO `sys_role_menu` VALUES (1, 4602);
+INSERT INTO `sys_role_menu` VALUES (1, 4603);
+INSERT INTO `sys_role_menu` VALUES (1, 4604);
+INSERT INTO `sys_role_menu` VALUES (1, 4700);
+INSERT INTO `sys_role_menu` VALUES (1, 4701);
+INSERT INTO `sys_role_menu` VALUES (1, 4702);
+INSERT INTO `sys_role_menu` VALUES (1, 4800);
+INSERT INTO `sys_role_menu` VALUES (1, 4801);
+INSERT INTO `sys_role_menu` VALUES (1, 4802);

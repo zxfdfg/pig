@@ -1,39 +1,62 @@
 # 数据库脚本使用说明
 
+> ⚠️ **重要**: 请先阅读 [DATABASE_STANDARDS.md](./DATABASE_STANDARDS.md) 了解数据库开发规范
+
 ## 📁 文件说明
 
 - `pig.sql` - 主数据库初始化脚本（包含所有表结构和初始数据）
 - `pig_config.sql` - 配置数据库初始化脚本
-- `migrations/` - 数据库版本迁移脚本目录（增量更新）
+- `test-data/test_data.sql` - 测试数据脚本（仅用于开发环境）
+- `DATABASE_STANDARDS.md` - 数据库开发规范（必读）
+- `migrations/` - ~~数据库版本迁移脚本目录~~（已废弃，不再使用）
 
 ## 🚀 使用场景
 
-### 场景1：全新安装（开发环境/测试环境）
+### 场景1：开发环境完整初始化
 
 **适用于**：第一次安装、本地开发、测试环境
 
 ```bash
-# 会删除并重建整个数据库
+# 1. 初始化表结构和配置
 mysql -u root -p < pig.sql
 mysql -u root -p < pig_config.sql
+
+# 2. 加载测试数据（可选）
+mysql -u root -p < test-data/test_data.sql
 ```
 
 ⚠️ **警告**：这会删除所有现有数据！
 
 ---
 
-### 场景2：更新表结构（生产环境/有数据的环境）
+### 场景2：只重置测试数据
+
+**适用于**：开发过程中需要重置测试数据
+
+```bash
+# 只重新加载测试数据，不影响表结构
+mysql -u root -p pig < test-data/test_data.sql
+```
+
+---
+
+### 场景3：生产环境初始化
+
+**适用于**：生产环境首次部署
+
+```bash
+# 只执行表结构和配置，不执行测试数据
+mysql -u root -p < pig.sql
+mysql -u root -p < pig_config.sql
+```
+
+---
+
+### 场景4：生产环境表结构更新
 
 **适用于**：生产环境、已有数据、只需要更新表结构
 
-#### 方法1：使用迁移脚本（推荐）
-
-```bash
-# 执行特定版本的迁移脚本
-mysql -u root -p pig < migrations/V1.0.1__add_distribution_tables.sql
-```
-
-#### 方法2：手动执行 ALTER 语句
+#### 方法1：手动执行 ALTER 语句（推荐）
 
 如果只是修改某个表的字段，可以单独执行 ALTER 语句：
 
@@ -51,98 +74,14 @@ ALTER TABLE dist_distributor MODIFY COLUMN phone VARCHAR(30) DEFAULT NULL COMMEN
 ALTER TABLE dist_distributor DROP COLUMN old_field;
 ```
 
-#### 方法3：只更新特定表（谨慎使用）
+#### 方法2：重建测试环境（开发环境）
 
-如果确定某个表可以重建（没有重要数据），可以单独执行该表的 DDL：
+如果是开发/测试环境，可以直接重建：
 
-```sql
--- 连接到数据库
-USE pig;
-
--- 删除并重建特定表
-DROP TABLE IF EXISTS dist_commission_config;
-CREATE TABLE `dist_commission_config` (
-  -- ... 完整的表结构
-);
-```
-
----
-
-## 📝 数据库迁移脚本规范
-
-### 命名规范
-
-迁移脚本统一放在 `migrations/` 目录，命名格式：
-
-```
-V{版本号}__{描述}.sql
-```
-
-示例：
-- `V1.0.0__init_database.sql` - 初始化数据库
-- `V1.0.1__add_distribution_tables.sql` - 添加分销系统表
-- `V1.0.2__add_distributor_level_field.sql` - 添加分销商等级字段
-- `V1.1.0__modify_commission_rate_precision.sql` - 修改佣金比例精度
-
-### 脚本内容规范
-
-每个迁移脚本应该：
-
-1. **幂等性**：可以重复执行不会出错
-2. **向下兼容**：不破坏现有数据
-3. **包含回滚**：提供回滚方案（注释形式）
-
-示例：
-
-```sql
--- ========================================
--- 版本: V1.0.2
--- 描述: 添加分销商等级字段
--- 日期: 2025-12-07
--- 作者: 开发团队
--- ========================================
-
--- 升级脚本
-ALTER TABLE dist_distributor 
-  ADD COLUMN vip_level INT DEFAULT 0 COMMENT 'VIP等级：0-普通 1-VIP1 2-VIP2';
-
--- 回滚脚本（注释形式，需要时手动执行）
--- ALTER TABLE dist_distributor DROP COLUMN vip_level;
-```
-
----
-
-## 🔄 版本管理工具（可选）
-
-对于大型项目，建议使用专业的数据库版本管理工具：
-
-### Flyway（推荐）
-
-```xml
-<!-- pom.xml -->
-<dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-core</artifactId>
-</dependency>
-```
-
-```yaml
-# application.yml
-spring:
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-```
-
-### Liquibase
-
-```xml
-<!-- pom.xml -->
-<dependency>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-core</artifactId>
-</dependency>
+```bash
+mysql -u root -p < pig.sql
+mysql -u root -p < pig_config.sql
+mysql -u root -p < test-data/test_data.sql
 ```
 
 ---
@@ -165,12 +104,16 @@ spring:
 
 ---
 
-## 📊 当前数据库版本
+## 📊 数据库模块
 
-| 版本 | 日期 | 描述 | 脚本 |
-|------|------|------|------|
-| 1.0.0 | 2025-12-07 | 初始化数据库 | pig.sql |
-| 1.0.1 | 2025-12-07 | 添加分销系统表 | 已集成到 pig.sql |
+| 模块 | 表数量 | 描述 | 状态 |
+|------|--------|------|------|
+| 系统核心 | 15+ | 用户、角色、菜单、部门等 | ✅ 已完成 |
+| 分销系统 | 6 | 分销商、佣金、提现等 | ✅ 已完成 |
+| 商品管理 | 7 | 商品、分类、SKU、CDKEY等 | ✅ 已完成 |
+
+**当前版本**: v1.0.2  
+**最后更新**: 2025-12-09
 
 ---
 

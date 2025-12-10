@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pig4cloud.pig.product.mapper.SkuMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.pig4cloud.pig.product.api.entity.ProductSku">
+		<id column="id" property="id"/>
+		<result column="product_id" property="productId"/>
+		<result column="sku_code" property="skuCode"/>
+		<result column="sku_name" property="skuName"/>
+		<result column="attributes" property="attributes"/>
+		<result column="price" property="price"/>
+		<result column="cost_price" property="costPrice"/>
+		<result column="stock" property="stock"/>
+		<result column="image" property="image"/>
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="del_flag" property="delFlag"/>
+	</resultMap>
+
+	<!-- 查询商品的所有SKU -->
+	<select id="listSkusByProductId" resultMap="baseResultMap">
+		SELECT * FROM product_sku
+		WHERE product_id = #{productId}
+		AND del_flag = 0
+		ORDER BY create_time ASC
+	</select>
+
+	<!-- 根据SKU编码查询 -->
+	<select id="getSkuByCode" resultMap="baseResultMap">
+		SELECT * FROM product_sku
+		WHERE sku_code = #{skuCode}
+		AND del_flag = 0
+	</select>
+
+	<!-- 查询SKU详情 -->
+	<select id="getSkuById" resultMap="baseResultMap">
+		SELECT * FROM product_sku
+		WHERE id = #{id}
+		AND del_flag = 0
+	</select>
+
+	<!-- 统计商品的SKU数量 -->
+	<select id="countByProductId" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM product_sku
+		WHERE product_id = #{productId}
+		AND del_flag = 0
+	</select>
+
+	<!-- 查询启用的SKU -->
+	<select id="listEnabledSkus" resultMap="baseResultMap">
+		SELECT * FROM product_sku
+		WHERE product_id = #{productId}
+		AND status = 1
+		AND del_flag = 0
+		ORDER BY create_time ASC
+	</select>
+
+</mapper>

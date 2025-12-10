@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pig4cloud.pig.product.mapper.PriceHistoryMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.pig4cloud.pig.product.api.entity.ProductPriceHistory">
+		<id column="id" property="id"/>
+		<result column="product_id" property="productId"/>
+		<result column="sku_id" property="skuId"/>
+		<result column="old_price" property="oldPrice"/>
+		<result column="new_price" property="newPrice"/>
+		<result column="change_reason" property="changeReason"/>
+		<result column="create_time" property="createTime"/>
+		<result column="create_by" property="createBy"/>
+	</resultMap>
+
+	<!-- 查询商品的价格历史 -->
+	<select id="listHistoryByProductId" resultMap="baseResultMap">
+		SELECT * FROM product_price_history
+		WHERE product_id = #{productId}
+		<if test="skuId != null">
+			AND sku_id = #{skuId}
+		</if>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 查询SKU的价格历史 -->
+	<select id="listHistoryBySkuId" resultMap="baseResultMap">
+		SELECT * FROM product_price_history
+		WHERE sku_id = #{skuId}
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 查询最近的价格变更 -->
+	<select id="getLatestHistory" resultMap="baseResultMap">
+		SELECT * FROM product_price_history
+		WHERE product_id = #{productId}
+		<if test="skuId != null">
+			AND sku_id = #{skuId}
+		</if>
+		ORDER BY create_time DESC
+		LIMIT 1
+	</select>
+
+	<!-- 查询指定时间段的价格变更 -->
+	<select id="listHistoryByTimeRange" resultMap="baseResultMap">
+		SELECT * FROM product_price_history
+		WHERE create_time &gt;= #{startTime}
+		AND create_time &lt;= #{endTime}
+		<if test="productId != null">
+			AND product_id = #{productId}
+		</if>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 统计价格变更次数 -->
+	<select id="countByProductId" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM product_price_history
+		WHERE product_id = #{productId}
+		<if test="skuId != null">
+			AND sku_id = #{skuId}
+		</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pig4cloud.pig.product.mapper.CdkeyMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.pig4cloud.pig.product.api.entity.ProductCdkey">
+		<id column="id" property="id"/>
+		<result column="product_id" property="productId"/>
+		<result column="cdkey" property="cdkey"/>
+		<result column="status" property="status"/>
+		<result column="distributor_id" property="distributorId"/>
+		<result column="order_id" property="orderId"/>
+		<result column="user_id" property="userId"/>
+		<result column="used_time" property="usedTime"/>
+		<result column="expire_time" property="expireTime"/>
+		<result column="commission_level1" property="commissionLevel1"/>
+		<result column="commission_level2" property="commissionLevel2"/>
+		<result column="commission_level3" property="commissionLevel3"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- 查询商品的CDKEY列表 -->
+	<select id="listCdkeysByProductId" resultMap="baseResultMap">
+		SELECT * FROM product_cdkey
+		WHERE product_id = #{productId}
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 根据CDKEY码查询 -->
+	<select id="getCdkeyByCode" resultMap="baseResultMap">
+		SELECT * FROM product_cdkey
+		WHERE cdkey = #{cdkey}
+	</select>
+
+	<!-- 查询未使用的CDKEY（用于自动分配） -->
+	<select id="getAvailableCdkey" resultMap="baseResultMap">
+		SELECT * FROM product_cdkey
+		WHERE product_id = #{productId}
+		AND status = 0
+		AND (expire_time IS NULL OR expire_time &gt; NOW())
+		ORDER BY create_time ASC
+		LIMIT 1
+		FOR UPDATE
+	</select>
+
+	<!-- 统计商品的CDKEY数量 -->
+	<select id="countByProductIdAndStatus" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM product_cdkey
+		WHERE product_id = #{productId}
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+	</select>
+
+	<!-- 查询过期的CDKEY -->
+	<select id="listExpiredCdkeys" resultMap="baseResultMap">
+		SELECT * FROM product_cdkey
+		WHERE status = 0
+		AND expire_time IS NOT NULL
+		AND expire_time &lt; NOW()
+		ORDER BY expire_time ASC
+	</select>
+
+	<!-- 查询分销商的CDKEY -->
+	<select id="listCdkeysByDistributorId" resultMap="baseResultMap">
+		SELECT * FROM product_cdkey
+		WHERE distributor_id = #{distributorId}
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 批量插入CDKEY -->
+	<insert id="batchInsert">
+		INSERT INTO product_cdkey (product_id, cdkey, status, commission_level1, commission_level2, commission_level3, create_time, update_time)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(#{item.productId}, #{item.cdkey}, #{item.status}, #{item.commissionLevel1}, #{item.commissionLevel2}, #{item.commissionLevel3}, NOW(), NOW())
+		</foreach>
+	</insert>
+
+</mapper>
