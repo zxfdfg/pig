@@ -48,7 +48,7 @@ mvn spring-boot:run
 cd pig/pig-auth
 mvn spring-boot:run
 
-# 5. 启动 Distribution (4201)
+# 5. 启动 Distribution (4200)
 cd pig/pig-distribution/pig-distribution-biz
 mvn spring-boot:run
 ```
@@ -320,7 +320,7 @@ curl -X GET "http://localhost:9999/distribution/distributor/page?current=1&size=
   -H "Authorization: Bearer YOUR_TOKEN"
 
 # 或访问 Swagger 文档
-http://localhost:4201/doc.html
+http://localhost:4200/doc.html
 ```
 
 ### 3. 查看数据库

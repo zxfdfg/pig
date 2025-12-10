@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class CategoryController {
 	@PostMapping
 	@SysLog("创建商品分类")
 	@Operation(summary = "创建分类", description = "创建商品分类")
+	@PreAuthorize("@pms.hasPermission('product:category:add')")
 	public R<Long> createCategory(@RequestBody ProductCategory category) {
 		Long categoryId = categoryService.createCategory(category);
 		return R.ok(categoryId);
@@ -48,6 +50,7 @@ public class CategoryController {
 	@PutMapping
 	@SysLog("更新商品分类")
 	@Operation(summary = "更新分类", description = "更新商品分类信息")
+	@PreAuthorize("@pms.hasPermission('product:category:edit')")
 	public R<Boolean> updateCategory(@RequestBody ProductCategory category) {
 		boolean result = categoryService.updateCategory(category);
 		return R.ok(result);
@@ -62,6 +65,7 @@ public class CategoryController {
 	@SysLog("删除商品分类")
 	@Operation(summary = "删除分类", description = "删除商品分类（验证无商品）")
 	@Parameter(name = "id", description = "分类ID", required = true)
+	@PreAuthorize("@pms.hasPermission('product:category:del')")
 	public R<Boolean> deleteCategory(@PathVariable Long id) {
 		boolean result = categoryService.deleteCategory(id);
 		return R.ok(result);

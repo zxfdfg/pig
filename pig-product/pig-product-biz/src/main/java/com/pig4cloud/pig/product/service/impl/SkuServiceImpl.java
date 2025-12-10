@@ -123,6 +123,16 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, ProductSku> implement
 	}
 
 	@Override
+	public Object getSkuPage(Integer current, Integer size, String productName, String skuCode) {
+		LambdaQueryWrapper<ProductSku> query = Wrappers.lambdaQuery();
+		query.like(StrUtil.isNotBlank(skuCode), ProductSku::getSkuCode, skuCode);
+		query.eq(ProductSku::getDelFlag, 0);
+		query.orderByDesc(ProductSku::getId);
+
+		return this.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(current, size), query);
+	}
+
+	@Override
 	public List<ProductSku> getSkusByProductId(Long productId) {
 		Assert.notNull(productId, "商品ID不能为空");
 

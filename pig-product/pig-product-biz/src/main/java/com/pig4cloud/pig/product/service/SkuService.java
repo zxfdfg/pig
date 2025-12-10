@@ -35,6 +35,16 @@ public interface SkuService extends IService<ProductSku> {
 	boolean deleteSku(Long id);
 
 	/**
+	 * 分页查询SKU
+	 * @param current 当前页
+	 * @param size 每页大小
+	 * @param productName 商品名称
+	 * @param skuCode SKU编码
+	 * @return SKU分页列表
+	 */
+	Object getSkuPage(Integer current, Integer size, String productName, String skuCode);
+
+	/**
 	 * 查询商品的所有SKU
 	 * @param productId 商品ID
 	 * @return SKU列表

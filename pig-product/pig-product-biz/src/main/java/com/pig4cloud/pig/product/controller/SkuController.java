@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class SkuController {
 	@PostMapping
 	@SysLog("创建SKU")
 	@Operation(summary = "创建SKU", description = "创建商品SKU")
+	@PreAuthorize("@pms.hasPermission('product:sku:add')")
 	public R<Long> createSku(@RequestBody ProductSku sku) {
 		Long skuId = skuService.createSku(sku);
 		return R.ok(skuId);
@@ -47,6 +49,7 @@ public class SkuController {
 	@PutMapping
 	@SysLog("更新SKU")
 	@Operation(summary = "更新SKU", description = "更新SKU信息")
+	@PreAuthorize("@pms.hasPermission('product:sku:edit')")
 	public R<Boolean> updateSku(@RequestBody ProductSku sku) {
 		boolean result = skuService.updateSku(sku);
 		return R.ok(result);
@@ -61,9 +64,27 @@ public class SkuController {
 	@SysLog("删除SKU")
 	@Operation(summary = "删除SKU", description = "删除SKU（验证无订单）")
 	@Parameter(name = "id", description = "SKU ID", required = true)
+	@PreAuthorize("@pms.hasPermission('product:sku:del')")
 	public R<Boolean> deleteSku(@PathVariable Long id) {
 		boolean result = skuService.deleteSku(id);
 		return R.ok(result);
+	}
+
+	/**
+	 * 分页查询SKU
+	 * @param current 当前页
+	 * @param size 每页大小
+	 * @param productName 商品名称
+	 * @param skuCode SKU编码
+	 * @return SKU分页列表
+	 */
+	@GetMapping("/page")
+	@Operation(summary = "分页查询SKU", description = "分页查询SKU列表")
+	public R getSkuPage(@RequestParam(defaultValue = "1") Integer current,
+			@RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(required = false) String productName,
+			@RequestParam(required = false) String skuCode) {
+		return R.ok(skuService.getSkuPage(current, size, productName, skuCode));
 	}
 
 	/**

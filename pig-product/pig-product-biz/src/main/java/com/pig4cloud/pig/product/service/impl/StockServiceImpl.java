@@ -1,7 +1,9 @@
 package com.pig4cloud.pig.product.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.product.api.entity.Product;
 import com.pig4cloud.pig.product.api.entity.ProductStockLog;
 import com.pig4cloud.pig.product.mapper.ProductMapper;
@@ -135,6 +137,34 @@ public class StockServiceImpl implements StockService {
 		query.orderByDesc(ProductStockLog::getCreateTime);
 
 		return stockLogMapper.selectList(query);
+	}
+
+	@Override
+	public Object getStockPage(Integer current, Integer size, String productName, String stockStatus) {
+		// 查询商品列表（带库存信息）
+		LambdaQueryWrapper<Product> query = Wrappers.lambdaQuery();
+		query.like(StrUtil.isNotBlank(productName), Product::getName, productName);
+		
+		// 根据库存状态筛选
+		if (StrUtil.isNotBlank(stockStatus)) {
+			if ("low".equals(stockStatus)) {
+				// 低库存：库存 <= 预警值
+				query.apply("stock <= stock_warning");
+			}
+			else if ("out".equals(stockStatus)) {
+				// 售罄：库存 = 0
+				query.eq(Product::getStock, 0);
+			}
+			else if ("normal".equals(stockStatus)) {
+				// 正常：库存 > 预警值
+				query.apply("stock > stock_warning");
+			}
+		}
+		
+		query.eq(Product::getDelFlag, 0);
+		query.orderByDesc(Product::getId);
+
+		return productMapper.selectPage(new Page<>(current, size), query);
 	}
 
 	@Override

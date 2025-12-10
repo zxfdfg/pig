@@ -52,6 +52,16 @@ public interface StockService {
 	List<ProductStockLog> getStockLogs(Long productId);
 
 	/**
+	 * 分页查询库存
+	 * @param current 当前页
+	 * @param size 每页大小
+	 * @param productName 商品名称
+	 * @param stockStatus 库存状态
+	 * @return 库存分页列表
+	 */
+	Object getStockPage(Integer current, Integer size, String productName, String stockStatus);
+
+	/**
 	 * 订单扣库存
 	 * @param productId 商品ID
 	 * @param quantity 数量

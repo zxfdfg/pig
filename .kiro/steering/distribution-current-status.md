@@ -150,9 +150,9 @@
 **原因**: API 文件不存在  
 **解决方案**: 已创建所有缺失的 API 文件
 
-### 3. 服务端口冲突 ✅ 已解决
-**问题**: distribution 服务端口 4200 被占用  
-**解决方案**: 已修改为 4201 端口
+### 3. 服务端口分配 ✅ 已确定
+**Distribution 服务**: 4200 端口  
+**Product 服务**: 4300 端口
 
 ### 4. 网关配置错误 ✅ 已解决
 **问题**: 网关路由配置结构错误  
@@ -193,7 +193,7 @@ cd pig/pig-upms/pig-upms-biz && mvn spring-boot:run
 # 4. 启动 Auth (3000)
 cd pig/pig-auth && mvn spring-boot:run
 
-# 5. 启动 Distribution (4201)
+# 5. 启动 Distribution (4200)
 cd pig/pig-distribution/pig-distribution-biz && mvn spring-boot:run
 ```
 

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,6 +35,7 @@ public class ProductController {
 	@PostMapping
 	@SysLog("创建商品")
 	@Operation(summary = "创建商品", description = "创建新商品，验证必填字段和价格")
+	@PreAuthorize("@pms.hasPermission('product:product:add')")
 	public R<Long> createProduct(@RequestBody Product product) {
 		Long productId = productService.createProduct(product);
 		return R.ok(productId);
@@ -47,6 +49,7 @@ public class ProductController {
 	@PutMapping
 	@SysLog("更新商品")
 	@Operation(summary = "更新商品", description = "更新商品信息，自动记录修改时间")
+	@PreAuthorize("@pms.hasPermission('product:product:edit')")
 	public R<Boolean> updateProduct(@RequestBody Product product) {
 		boolean result = productService.updateProduct(product);
 		return R.ok(result);
@@ -61,6 +64,7 @@ public class ProductController {
 	@SysLog("删除商品")
 	@Operation(summary = "删除商品", description = "删除商品（验证无订单）")
 	@Parameter(name = "id", description = "商品ID", required = true)
+	@PreAuthorize("@pms.hasPermission('product:product:del')")
 	public R<Boolean> deleteProduct(@PathVariable Long id) {
 		boolean result = productService.deleteProduct(id);
 		return R.ok(result);
@@ -103,6 +107,7 @@ public class ProductController {
 	@Operation(summary = "更新商品状态", description = "商品上下架管理")
 	@Parameter(name = "id", description = "商品ID", required = true)
 	@Parameter(name = "status", description = "状态：1-上架，2-下架", required = true)
+	@PreAuthorize("@pms.hasPermission('product:product:status')")
 	public R<Boolean> updateProductStatus(@PathVariable Long id, @RequestParam Integer status) {
 		boolean result = productService.updateProductStatus(id, status);
 		return R.ok(result);

@@ -321,13 +321,13 @@ cd pig/pig-distribution/pig-distribution-biz
 mvn spring-boot:run
 ```
 验证：
-- 服务正常启动（端口 4201）
+- 服务正常启动（端口 4200）
 - 注册到 Nacos
 - 网关路由正常
 
 #### 1.2 接口测试
 使用 Swagger UI 测试：
-- http://localhost:4201/doc.html
+- http://localhost:4200/doc.html
 - 测试所有 CRUD 接口
 - 验证业务逻辑
 

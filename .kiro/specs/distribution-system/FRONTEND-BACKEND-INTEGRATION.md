@@ -99,7 +99,7 @@ cd pig/pig-distribution/pig-distribution-biz
 mvn spring-boot:run
 
 # 验证服务
-curl http://localhost:4201/actuator/health
+curl http://localhost:4200/actuator/health
 ```
 
 ### 步骤 2: 确认网关路由
@@ -185,7 +185,7 @@ mysql -u root -p < pig/db/distribution-schema.sql
 **检查**:
 ```bash
 # 1. 检查服务状态
-curl http://localhost:4201/actuator/health
+curl http://localhost:4200/actuator/health
 
 # 2. 检查网关路由
 curl http://localhost:9999/actuator/gateway/routes | grep distribution

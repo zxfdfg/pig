@@ -17,6 +17,8 @@
 
 ### 1. 初始化数据库（2分钟）
 
+**⚠️ 重要**: 必须按顺序执行以下命令，确保Nacos配置正确加载！
+
 ```bash
 # 进入数据库目录
 cd pig/db
@@ -24,18 +26,25 @@ cd pig/db
 # 初始化数据库（会删除并重建pig数据库）
 mysql -u root -p < pig.sql
 
-# 导入配置数据
+# 导入配置数据（包含Nacos配置，必须执行！）
 mysql -u root -p < pig_config.sql
 
 # 导入测试数据
 mysql -u root -p < test-data/test_data.sql
 ```
 
-**验证**: 登录MySQL，检查是否有以下表：
+**验证数据库**:
 ```sql
 USE pig;
 SHOW TABLES LIKE 'product%';
 -- 应该看到7张product相关的表
+```
+
+**验证Nacos配置**:
+```sql
+USE pig_config;
+SELECT id, data_id FROM config_info WHERE data_id LIKE 'pig-product%';
+-- 应该看到: pig-product-biz-dev.yml (id=9)
 ```
 
 ---
@@ -161,9 +170,45 @@ INSERT INTO sys_role_menu VALUES (1, 4100);
 
 ## 🐛 常见问题
 
-### 问题1: 服务启动失败
+### 问题1: 服务启动失败 - DataSource配置错误
 
-**症状**: 服务启动报错
+**症状**: 
+```
+WARN: config[dataId=pig-product-biz-dev.yml, group=DEFAULT_GROUP] is empty
+Failed to configure a DataSource: 'url' attribute is not specified
+```
+
+**原因**: Nacos配置中心没有加载到 `pig-product-biz-dev.yml` 配置
+
+**解决方案**:
+1. **重新导入pig_config.sql**（推荐）:
+   ```bash
+   mysql -u root -p < pig/db/pig_config.sql
+   ```
+   然后重启Nacos服务
+
+2. **或手动在Nacos控制台添加配置**:
+   - 访问 http://localhost:8848/nacos
+   - 登录 (nacos/nacos)
+   - 进入 配置管理 → 配置列表
+   - 点击 "+" 新建配置
+   - Data ID: `pig-product-biz-dev.yml`
+   - Group: `DEFAULT_GROUP`
+   - 配置格式: YAML
+   - 配置内容:
+   ```yaml
+   spring:
+     datasource:
+       type: com.zaxxer.hikari.HikariDataSource
+       driver-class-name: com.mysql.cj.jdbc.Driver
+       username: ${MYSQL_USERNAME:root}
+       password: ${MYSQL_PASSWORD:root}
+       url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DB:pig}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+   ```
+
+### 问题2: 端口被占用
+
+**症状**: 服务启动报端口占用错误
 
 **解决方案**:
 1. 检查端口是否被占用
@@ -175,7 +220,7 @@ INSERT INTO sys_role_menu VALUES (1, 4100);
 2. 检查MySQL和Redis是否正常运行
 3. 检查Nacos是否已启动
 
-### 问题2: 菜单不显示
+### 问题3: 菜单不显示
 
 **症状**: 登录后看不到"商品管理"菜单
 
@@ -190,7 +235,7 @@ SELECT * FROM sys_role_menu WHERE menu_id = 4000;
 -- 如果没有，重新导入pig.sql
 ```
 
-### 问题3: 接口404
+### 问题4: 接口404
 
 **症状**: 前端调用接口返回404
 
@@ -200,7 +245,7 @@ SELECT * FROM sys_role_menu WHERE menu_id = 4000;
 3. 访问 http://localhost:8848/nacos 查看服务列表
 4. 检查浏览器控制台的Network标签，查看实际请求URL
 
-### 问题4: 前端页面报错
+### 问题5: 前端页面报错
 
 **症状**: 前端页面显示错误
 

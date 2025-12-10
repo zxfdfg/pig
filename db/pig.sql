@@ -1488,95 +1488,95 @@ CREATE TABLE `product_price_history` (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ----------------------------
--- 商品管理模块菜单
+-- 商品管理模块菜单 (menu_id: 5000-5899)
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES (4000, '商品管理', 'product', NULL, '/product', -1, 'ele-Goods', '1', 3, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5000, '商品管理', 'product', NULL, '/product', -1, 'ele-Goods', '1', 4, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
 
 -- 商品列表
-INSERT INTO `sys_menu` VALUES (4100, '商品列表', 'product-list', NULL, '/product/product/index', 4000, 'ele-List', '1', 1, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4101, '商品查询', NULL, 'product_product_view', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4102, '商品新增', NULL, 'product_product_add', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4103, '商品修改', NULL, 'product_product_edit', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4104, '商品删除', NULL, 'product_product_del', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4105, '商品上下架', NULL, 'product_product_status', NULL, 4100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5100, '商品列表', 'product-list', NULL, '/product/product/index', 5000, 'ele-List', '1', 1, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5101, '商品查询', NULL, 'product_product_view', NULL, 5100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5102, '商品新增', NULL, 'product_product_add', NULL, 5100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5103, '商品修改', NULL, 'product_product_edit', NULL, 5100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5104, '商品删除', NULL, 'product_product_del', NULL, 5100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5105, '商品上下架', NULL, 'product_product_status', NULL, 5100, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- 分类管理
-INSERT INTO `sys_menu` VALUES (4200, '分类管理', 'category', NULL, '/product/category/index', 4000, 'ele-FolderOpened', '1', 2, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4201, '分类查询', NULL, 'product_category_view', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4202, '分类新增', NULL, 'product_category_add', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4203, '分类修改', NULL, 'product_category_edit', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4204, '分类删除', NULL, 'product_category_del', NULL, 4200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5200, '分类管理', 'category', NULL, '/product/category/index', 5000, 'ele-FolderOpened', '1', 2, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5201, '分类查询', NULL, 'product_category_view', NULL, 5200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5202, '分类新增', NULL, 'product_category_add', NULL, 5200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5203, '分类修改', NULL, 'product_category_edit', NULL, 5200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5204, '分类删除', NULL, 'product_category_del', NULL, 5200, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- SKU管理
-INSERT INTO `sys_menu` VALUES (4300, 'SKU管理', 'sku', NULL, '/product/sku/index', 4000, 'ele-Grid', '1', 3, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4301, 'SKU查询', NULL, 'product_sku_view', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4302, 'SKU新增', NULL, 'product_sku_add', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4303, 'SKU修改', NULL, 'product_sku_edit', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4304, 'SKU删除', NULL, 'product_sku_del', NULL, 4300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5300, 'SKU管理', 'sku', NULL, '/product/sku/index', 5000, 'ele-Grid', '1', 3, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5301, 'SKU查询', NULL, 'product_sku_view', NULL, 5300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5302, 'SKU新增', NULL, 'product_sku_add', NULL, 5300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5303, 'SKU修改', NULL, 'product_sku_edit', NULL, 5300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5304, 'SKU删除', NULL, 'product_sku_del', NULL, 5300, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- 库存管理
-INSERT INTO `sys_menu` VALUES (4400, '库存管理', 'stock', NULL, '/product/stock/index', 4000, 'ele-Box', '1', 4, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4401, '库存查询', NULL, 'product_stock_view', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4402, '库存增加', NULL, 'product_stock_increase', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4403, '库存减少', NULL, 'product_stock_decrease', NULL, 4400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5400, '库存管理', 'stock', NULL, '/product/stock/index', 5000, 'ele-Box', '1', 4, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5401, '库存查询', NULL, 'product_stock_view', NULL, 5400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5402, '库存增加', NULL, 'product_stock_increase', NULL, 5400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5403, '库存减少', NULL, 'product_stock_decrease', NULL, 5400, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- CDKEY管理
-INSERT INTO `sys_menu` VALUES (4500, 'CDKEY管理', 'cdkey', NULL, '/product/cdkey/index', 4000, 'ele-Key', '1', 5, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4501, 'CDKEY查询', NULL, 'product_cdkey_view', NULL, 4500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4502, 'CDKEY导入', NULL, 'product_cdkey_import', NULL, 4500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5500, 'CDKEY管理', 'cdkey', NULL, '/product/cdkey/index', 5000, 'ele-Key', '1', 5, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5501, 'CDKEY查询', NULL, 'product_cdkey_view', NULL, 5500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5502, 'CDKEY导入', NULL, 'product_cdkey_import', NULL, 5500, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- 佣金配置
-INSERT INTO `sys_menu` VALUES (4600, '佣金配置', 'commission', NULL, '/product/commission/index', 4000, 'ele-Money', '1', 6, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4601, '佣金查询', NULL, 'product_commission_view', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4602, '佣金新增', NULL, 'product_commission_add', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4603, '佣金修改', NULL, 'product_commission_edit', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4604, '佣金删除', NULL, 'product_commission_del', NULL, 4600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5600, '佣金配置', 'commission', NULL, '/product/commission/index', 5000, 'ele-Money', '1', 6, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5601, '佣金查询', NULL, 'product_commission_view', NULL, 5600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5602, '佣金新增', NULL, 'product_commission_add', NULL, 5600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5603, '佣金修改', NULL, 'product_commission_edit', NULL, 5600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5604, '佣金删除', NULL, 'product_commission_del', NULL, 5600, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- 统计分析
-INSERT INTO `sys_menu` VALUES (4700, '统计分析', 'statistics', NULL, '/product/statistics/index', 4000, 'ele-DataAnalysis', '1', 7, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4701, '统计查询', NULL, 'product_statistics_view', NULL, 4700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4702, '数据导出', NULL, 'product_statistics_export', NULL, 4700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5700, '统计分析', 'statistics', NULL, '/product/statistics/index', 5000, 'ele-DataAnalysis', '1', 7, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5701, '统计查询', NULL, 'product_statistics_view', NULL, 5700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5702, '数据导出', NULL, 'product_statistics_export', NULL, 5700, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- 分销商商品
-INSERT INTO `sys_menu` VALUES (4800, '分销商品', 'distributor-product', NULL, '/product/distributor/index', 4000, 'ele-ShoppingCart', '1', 8, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
-INSERT INTO `sys_menu` VALUES (4801, '商品查询', NULL, 'product_distributor_view', NULL, 4800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
-INSERT INTO `sys_menu` VALUES (4802, '生成推广链接', NULL, 'product_distributor_link', NULL, 4800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5800, '分销商品', 'distributor-product', NULL, '/product/distributor/index', 5000, 'ele-ShoppingCart', '1', 8, '0', '0', '0', 'admin', '2025-12-09 12:00:00', 'admin', '2025-12-09 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5801, '商品查询', NULL, 'product_distributor_view', NULL, 5800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
+INSERT INTO `sys_menu` VALUES (5802, '生成推广链接', NULL, 'product_distributor_link', NULL, 5800, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-09 12:00:00', ' ', NULL, '0');
 
 -- ----------------------------
 -- 商品管理模块权限（管理员角色）
 -- ----------------------------
-INSERT INTO `sys_role_menu` VALUES (1, 4000);
-INSERT INTO `sys_role_menu` VALUES (1, 4100);
-INSERT INTO `sys_role_menu` VALUES (1, 4101);
-INSERT INTO `sys_role_menu` VALUES (1, 4102);
-INSERT INTO `sys_role_menu` VALUES (1, 4103);
-INSERT INTO `sys_role_menu` VALUES (1, 4104);
-INSERT INTO `sys_role_menu` VALUES (1, 4105);
-INSERT INTO `sys_role_menu` VALUES (1, 4200);
-INSERT INTO `sys_role_menu` VALUES (1, 4201);
-INSERT INTO `sys_role_menu` VALUES (1, 4202);
-INSERT INTO `sys_role_menu` VALUES (1, 4203);
-INSERT INTO `sys_role_menu` VALUES (1, 4204);
-INSERT INTO `sys_role_menu` VALUES (1, 4300);
-INSERT INTO `sys_role_menu` VALUES (1, 4301);
-INSERT INTO `sys_role_menu` VALUES (1, 4302);
-INSERT INTO `sys_role_menu` VALUES (1, 4303);
-INSERT INTO `sys_role_menu` VALUES (1, 4304);
-INSERT INTO `sys_role_menu` VALUES (1, 4400);
-INSERT INTO `sys_role_menu` VALUES (1, 4401);
-INSERT INTO `sys_role_menu` VALUES (1, 4402);
-INSERT INTO `sys_role_menu` VALUES (1, 4403);
-INSERT INTO `sys_role_menu` VALUES (1, 4500);
-INSERT INTO `sys_role_menu` VALUES (1, 4501);
-INSERT INTO `sys_role_menu` VALUES (1, 4502);
-INSERT INTO `sys_role_menu` VALUES (1, 4600);
-INSERT INTO `sys_role_menu` VALUES (1, 4601);
-INSERT INTO `sys_role_menu` VALUES (1, 4602);
-INSERT INTO `sys_role_menu` VALUES (1, 4603);
-INSERT INTO `sys_role_menu` VALUES (1, 4604);
-INSERT INTO `sys_role_menu` VALUES (1, 4700);
-INSERT INTO `sys_role_menu` VALUES (1, 4701);
-INSERT INTO `sys_role_menu` VALUES (1, 4702);
-INSERT INTO `sys_role_menu` VALUES (1, 4800);
-INSERT INTO `sys_role_menu` VALUES (1, 4801);
-INSERT INTO `sys_role_menu` VALUES (1, 4802);
+INSERT INTO `sys_role_menu` VALUES (1, 5000);
+INSERT INTO `sys_role_menu` VALUES (1, 5100);
+INSERT INTO `sys_role_menu` VALUES (1, 5101);
+INSERT INTO `sys_role_menu` VALUES (1, 5102);
+INSERT INTO `sys_role_menu` VALUES (1, 5103);
+INSERT INTO `sys_role_menu` VALUES (1, 5104);
+INSERT INTO `sys_role_menu` VALUES (1, 5105);
+INSERT INTO `sys_role_menu` VALUES (1, 5200);
+INSERT INTO `sys_role_menu` VALUES (1, 5201);
+INSERT INTO `sys_role_menu` VALUES (1, 5202);
+INSERT INTO `sys_role_menu` VALUES (1, 5203);
+INSERT INTO `sys_role_menu` VALUES (1, 5204);
+INSERT INTO `sys_role_menu` VALUES (1, 5300);
+INSERT INTO `sys_role_menu` VALUES (1, 5301);
+INSERT INTO `sys_role_menu` VALUES (1, 5302);
+INSERT INTO `sys_role_menu` VALUES (1, 5303);
+INSERT INTO `sys_role_menu` VALUES (1, 5304);
+INSERT INTO `sys_role_menu` VALUES (1, 5400);
+INSERT INTO `sys_role_menu` VALUES (1, 5401);
+INSERT INTO `sys_role_menu` VALUES (1, 5402);
+INSERT INTO `sys_role_menu` VALUES (1, 5403);
+INSERT INTO `sys_role_menu` VALUES (1, 5500);
+INSERT INTO `sys_role_menu` VALUES (1, 5501);
+INSERT INTO `sys_role_menu` VALUES (1, 5502);
+INSERT INTO `sys_role_menu` VALUES (1, 5600);
+INSERT INTO `sys_role_menu` VALUES (1, 5601);
+INSERT INTO `sys_role_menu` VALUES (1, 5602);
+INSERT INTO `sys_role_menu` VALUES (1, 5603);
+INSERT INTO `sys_role_menu` VALUES (1, 5604);
+INSERT INTO `sys_role_menu` VALUES (1, 5700);
+INSERT INTO `sys_role_menu` VALUES (1, 5701);
+INSERT INTO `sys_role_menu` VALUES (1, 5702);
+INSERT INTO `sys_role_menu` VALUES (1, 5800);
+INSERT INTO `sys_role_menu` VALUES (1, 5801);
+INSERT INTO `sys_role_menu` VALUES (1, 5802);

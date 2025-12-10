@@ -26,14 +26,14 @@ mvn spring-boot:run
 cd pig/pig-auth
 mvn spring-boot:run
 
-# 5. 启动 Distribution (4201)
+# 5. 启动 Distribution (4200)
 cd pig/pig-distribution/pig-distribution-biz
 mvn spring-boot:run
 ```
 
 ### 2. 访问 Swagger 文档
 
-- **直接访问**: http://localhost:4201/doc.html
+- **直接访问**: http://localhost:4200/doc.html
 - **通过网关**: http://localhost:9999/distribution/doc.html
 
 ---
@@ -460,7 +460,7 @@ Authorization: Bearer {access_token}
 **检查**:
 ```bash
 # 1. 检查服务是否启动
-curl http://localhost:4201/actuator/health
+curl http://localhost:4200/actuator/health
 
 # 2. 检查 Nacos 注册
 http://localhost:8848/nacos
