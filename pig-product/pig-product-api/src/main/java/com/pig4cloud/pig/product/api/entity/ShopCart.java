@@ -93,4 +93,41 @@ public class ShopCart implements Serializable {
 	@Schema(description = "删除标记：0-正常，1-删除")
 	private Integer delFlag;
 
+	// ========== 以下字段不存储到数据库，仅用于返回给前端 ==========
+	
+	/**
+	 * 商品名称（非数据库字段）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "商品名称")
+	private String productName;
+
+	/**
+	 * 商品图片（非数据库字段）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "商品图片")
+	private String productImage;
+
+	/**
+	 * 商品价格（非数据库字段）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "商品价格")
+	private java.math.BigDecimal price;
+
+	/**
+	 * 商品库存（非数据库字段）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "商品库存")
+	private Integer stock;
+
+	/**
+	 * SKU名称（非数据库字段）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "SKU名称")
+	private String skuName;
+
 }

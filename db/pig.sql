@@ -393,6 +393,11 @@ INSERT INTO `sys_menu` VALUES (3401, '配置查询', NULL, 'dist_config_view', N
 INSERT INTO `sys_menu` VALUES (3402, '配置新增', NULL, 'dist_config_add', NULL, 3400, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
 INSERT INTO `sys_menu` VALUES (3403, '配置修改', NULL, 'dist_config_edit', NULL, 3400, NULL, '1', 2, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
 INSERT INTO `sys_menu` VALUES (3404, '配置删除', NULL, 'dist_config_del', NULL, 3400, NULL, '1', 3, '0', NULL, '1', 'admin', '2025-12-07 12:00:00', ' ', NULL, '0');
+-- 订单管理 (5900-5999)
+INSERT INTO `sys_menu` VALUES (5900, '订单管理', 'shop-order', NULL, '/admin/shop-order', 5000, 'ele-List', '1', 9, '0', '0', '0', 'admin', '2025-12-19 12:00:00', 'admin', '2025-12-19 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5901, '订单查询', NULL, 'shop_order_view', NULL, 5900, NULL, '1', 0, '0', NULL, '1', 'admin', '2025-12-19 12:00:00', 'admin', '2025-12-19 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5902, '订单发货', NULL, 'shop_order_ship', NULL, 5900, NULL, '1', 1, '0', NULL, '1', 'admin', '2025-12-19 12:00:00', 'admin', '2025-12-19 12:00:00', '0');
+INSERT INTO `sys_menu` VALUES (5903, '订单导出', NULL, 'shop_order_export', NULL, 5900, NULL, '1', 2, '0', NULL, '1', 'admin', '2025-12-19 12:00:00', 'admin', '2025-12-19 12:00:00', '0');
 COMMIT;
 
 -- ----------------------------
@@ -591,9 +596,7 @@ INSERT INTO `sys_role_menu` VALUES (1, 2870);
 INSERT INTO `sys_role_menu` VALUES (1, 2871);
 INSERT INTO `sys_role_menu` VALUES (1, 2906);
 INSERT INTO `sys_role_menu` VALUES (1, 2907);
-INSERT INTO `sys_role_menu` VALUES (1, 4000);
-INSERT INTO `sys_role_menu` VALUES (1, 4001);
-INSERT INTO `sys_role_menu` VALUES (1, 4002);
+
 INSERT INTO `sys_role_menu` VALUES (1, 9000);
 INSERT INTO `sys_role_menu` VALUES (1, 9005);
 INSERT INTO `sys_role_menu` VALUES (1, 9006);
@@ -633,9 +636,11 @@ INSERT INTO `sys_role_menu` VALUES (1, 3401);
 INSERT INTO `sys_role_menu` VALUES (1, 3402);
 INSERT INTO `sys_role_menu` VALUES (1, 3403);
 INSERT INTO `sys_role_menu` VALUES (1, 3404);
-INSERT INTO `sys_role_menu` VALUES (2, 4000);
-INSERT INTO `sys_role_menu` VALUES (2, 4001);
-INSERT INTO `sys_role_menu` VALUES (2, 4002);
+-- 订单管理权限
+INSERT INTO `sys_role_menu` VALUES (1, 5900);
+INSERT INTO `sys_role_menu` VALUES (1, 5901);
+INSERT INTO `sys_role_menu` VALUES (1, 5902);
+INSERT INTO `sys_role_menu` VALUES (1, 5903);
 COMMIT;
 
 -- ----------------------------
@@ -1632,6 +1637,10 @@ CREATE TABLE `shop_order` (
   `remark` VARCHAR(500) DEFAULT NULL COMMENT '订单备注',
   `cancel_reason` VARCHAR(255) DEFAULT NULL COMMENT '取消原因',
   `cancel_time` DATETIME DEFAULT NULL COMMENT '取消时间',
+  `ship_time` DATETIME DEFAULT NULL COMMENT '发货时间',
+  `logistics_company` VARCHAR(64) DEFAULT NULL COMMENT '物流公司',
+  `logistics_no` VARCHAR(64) DEFAULT NULL COMMENT '物流单号',
+  `receive_time` DATETIME DEFAULT NULL COMMENT '收货时间',
   `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_by` VARCHAR(64) DEFAULT NULL COMMENT '创建人',

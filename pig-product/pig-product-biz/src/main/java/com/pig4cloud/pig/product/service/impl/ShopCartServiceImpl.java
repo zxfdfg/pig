@@ -85,7 +85,23 @@ public class ShopCartServiceImpl extends ServiceImpl<ShopCartMapper, ShopCart> i
 		LambdaQueryWrapper<ShopCart> wrapper = Wrappers.lambdaQuery();
 		wrapper.eq(ShopCart::getUserId, userId).orderByDesc(ShopCart::getCreateTime);
 
-		return this.list(wrapper);
+		List<ShopCart> cartList = this.list(wrapper);
+		
+		// 填充商品信息
+		cartList.forEach(cart -> {
+			Product product = productMapper.selectById(cart.getProductId());
+			if (product != null) {
+				cart.setProductName(product.getName());
+				cart.setProductImage(product.getCoverImage());
+				cart.setPrice(product.getPrice());
+				cart.setStock(product.getStock());
+				// SKU名称暂时留空，后续如果有SKU表再补充
+				cart.setSkuName(null);
+			}
+		});
+		
+		log.info("查询用户购物车，用户ID：{}，商品数量：{}", userId, cartList.size());
+		return cartList;
 	}
 
 	@Override

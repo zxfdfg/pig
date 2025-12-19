@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -212,13 +213,35 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderMapper, ShopOrder
 
 		wrapper.orderByDesc(ShopOrder::getCreateTime);
 
-		return this.page(page, wrapper);
+		IPage<ShopOrder> orderPage = this.page(page, wrapper);
+
+		// 查询订单明细
+		orderPage.getRecords().forEach(order -> {
+			LambdaQueryWrapper<ShopOrderItem> itemWrapper = Wrappers.lambdaQuery();
+			itemWrapper.eq(ShopOrderItem::getOrderId, order.getId());
+			List<ShopOrderItem> items = shopOrderItemMapper.selectList(itemWrapper);
+			order.setItems(items);
+		});
+
+		return orderPage;
 	}
 
 	@Override
 	public ShopOrder getOrderDetail(Long id) {
 		Assert.notNull(id, "订单ID不能为空");
-		return this.getById(id);
+		
+		ShopOrder order = this.getById(id);
+		if (order == null) {
+			return null;
+		}
+		
+		// 查询订单明细
+		LambdaQueryWrapper<ShopOrderItem> itemWrapper = Wrappers.lambdaQuery();
+		itemWrapper.eq(ShopOrderItem::getOrderId, order.getId());
+		List<ShopOrderItem> items = shopOrderItemMapper.selectList(itemWrapper);
+		order.setItems(items);
+		
+		return order;
 	}
 
 	@Override
@@ -374,6 +397,54 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderMapper, ShopOrder
 		}
 
 		log.info("释放库存成功，订单号：{}", orderNo);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean shipOrder(Long id, String logisticsCompany, String logisticsNo) {
+		Assert.notNull(id, "订单ID不能为空");
+		Assert.hasText(logisticsCompany, "物流公司不能为空");
+		Assert.hasText(logisticsNo, "物流单号不能为空");
+
+		ShopOrder order = this.getById(id);
+		Assert.notNull(order, "订单不存在");
+		Assert.isTrue(order.getStatus() == 1, "订单状态异常，只有待发货订单才能发货");
+
+		// 更新订单状态
+		order.setStatus(2); // 待收货
+		order.setShipTime(LocalDateTime.now());
+		order.setLogisticsCompany(logisticsCompany);
+		order.setLogisticsNo(logisticsNo);
+
+		log.info("订单发货成功，订单号：{}，物流公司：{}，物流单号：{}", order.getOrderNo(), logisticsCompany, logisticsNo);
+		return this.updateById(order);
+	}
+
+	@Override
+	public IPage<ShopOrder> getAdminOrderPage(Page<ShopOrder> page, Integer status, String orderNo) {
+		LambdaQueryWrapper<ShopOrder> wrapper = Wrappers.lambdaQuery();
+
+		if (status != null) {
+			wrapper.eq(ShopOrder::getStatus, status);
+		}
+
+		if (StringUtils.hasText(orderNo)) {
+			wrapper.like(ShopOrder::getOrderNo, orderNo);
+		}
+
+		wrapper.orderByDesc(ShopOrder::getCreateTime);
+
+		IPage<ShopOrder> orderPage = this.page(page, wrapper);
+
+		// 查询订单明细
+		orderPage.getRecords().forEach(order -> {
+			LambdaQueryWrapper<ShopOrderItem> itemWrapper = Wrappers.lambdaQuery();
+			itemWrapper.eq(ShopOrderItem::getOrderId, order.getId());
+			List<ShopOrderItem> items = shopOrderItemMapper.selectList(itemWrapper);
+			order.setItems(items);
+		});
+
+		return orderPage;
 	}
 
 }

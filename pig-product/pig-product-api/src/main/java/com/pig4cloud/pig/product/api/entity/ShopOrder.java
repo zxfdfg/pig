@@ -146,10 +146,41 @@ public class ShopOrder extends BaseEntity {
 	private LocalDateTime cancelTime;
 
 	/**
+	 * 发货时间
+	 */
+	@Schema(description = "发货时间")
+	private LocalDateTime shipTime;
+
+	/**
+	 * 物流公司
+	 */
+	@Schema(description = "物流公司")
+	private String logisticsCompany;
+
+	/**
+	 * 物流单号
+	 */
+	@Schema(description = "物流单号")
+	private String logisticsNo;
+
+	/**
+	 * 收货时间
+	 */
+	@Schema(description = "收货时间")
+	private LocalDateTime receiveTime;
+
+	/**
 	 * 删除标记：0-正常，1-删除
 	 */
 	@TableLogic
 	@Schema(description = "删除标记：0-正常，1-删除")
 	private Integer delFlag;
+
+	/**
+	 * 订单明细列表（不映射到数据库）
+	 */
+	@com.baomidou.mybatisplus.annotation.TableField(exist = false)
+	@Schema(description = "订单明细列表")
+	private java.util.List<ShopOrderItem> items;
 
 }
