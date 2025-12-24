@@ -1,0 +1,115 @@
+# MySQL 配置 - 2核2GB 服务器极限优化版
+# 此配置牺牲部分性能和功能，换取最小内存占用
+
+[mysqld]
+# ==================== 内存优化 ====================
+
+# InnoDB 缓冲池 - 最小化（默认 128M，这里设为 100M）
+innodb_buffer_pool_size = 100M
+innodb_buffer_pool_instances = 1
+
+# 日志缓冲 - 最小化
+innodb_log_buffer_size = 4M
+innodb_log_file_size = 32M
+
+# 查询缓存 - 禁用（MySQL 8.0 已废弃）
+query_cache_size = 0
+query_cache_type = 0
+
+# 表缓存 - 最小化
+table_open_cache = 32
+table_definition_cache = 64
+
+# 线程缓存 - 最小化
+thread_cache_size = 8
+
+# 排序缓冲 - 最小化
+sort_buffer_size = 256K
+read_buffer_size = 256K
+read_rnd_buffer_size = 256K
+join_buffer_size = 256K
+
+# 临时表 - 最小化
+tmp_table_size = 8M
+max_heap_table_size = 8M
+
+# ==================== 连接优化 ====================
+
+# 最大连接数 - 限制（默认 151，这里设为 30）
+max_connections = 30
+max_connect_errors = 100
+
+# 连接超时
+wait_timeout = 600
+interactive_timeout = 600
+
+# ==================== 性能优化 ====================
+
+# InnoDB 刷新策略 - 牺牲安全性换取性能
+# 0: 每秒刷新一次（最快，但可能丢失 1 秒数据）
+# 1: 每次事务提交刷新（最安全，但最慢）
+# 2: 每次事务提交写入日志，每秒刷新（折中）
+innodb_flush_log_at_trx_commit = 2
+
+# 刷新方法
+innodb_flush_method = O_DIRECT
+
+# 禁用双写缓冲（提升性能，但降低安全性）
+# 注意：仅在测试环境使用，生产环境不建议
+# innodb_doublewrite = 0
+
+# ==================== 日志优化 ====================
+
+# 慢查询日志 - 禁用以节省资源
+slow_query_log = 0
+
+# 错误日志 - 仅记录错误
+log_error_verbosity = 1
+
+# 二进制日志 - 禁用（如果不需要主从复制）
+skip-log-bin
+
+# ==================== 其他优化 ====================
+
+# 禁用性能模式（节省内存）
+performance_schema = OFF
+
+# 禁用符号链接
+symbolic-links = 0
+
+# 字符集
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# 时区
+default-time-zone = '+08:00'
+
+# ==================== 安全设置 ====================
+
+# 禁用本地文件加载
+local_infile = 0
+
+# SQL 模式
+sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+[mysql]
+default-character-set = utf8mb4
+
+[client]
+default-character-set = utf8mb4
+
+# ==================== 说明 ====================
+# 此配置将 MySQL 内存占用降低到约 300-400MB
+# 
+# 优化措施：
+# 1. InnoDB 缓冲池从 128M 降到 100M
+# 2. 最大连接数从 151 降到 30
+# 3. 禁用性能模式（performance_schema）
+# 4. 禁用二进制日志（如果不需要主从复制）
+# 5. 使用 innodb_flush_log_at_trx_commit=2（牺牲部分安全性）
+# 
+# 注意事项：
+# - 此配置适合测试和演示环境
+# - 不建议用于生产环境
+# - 并发能力有限（最多 30 个连接）
+# - 可能丢失最近 1 秒的数据（如果服务器崩溃）

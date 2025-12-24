@@ -1,0 +1,59 @@
+# 这是一个 Dockerfile 模板示例
+# 每个 PIG 服务都需要在其目录下创建类似的 Dockerfile
+
+# ==================== 构建阶段 ====================
+FROM maven:3.8-openjdk-17 AS build
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制 Maven 配置文件（利用 Docker 缓存）
+COPY pom.xml .
+COPY ../pom.xml ../pom.xml
+
+# 下载依赖（这一层会被缓存）
+RUN mvn dependency:go-offline -B
+
+# 复制源码
+COPY src ./src
+
+# 编译打包（跳过测试以加快构建速度）
+RUN mvn clean package -DskipTests -B
+
+# ==================== 运行阶段 ====================
+FROM openjdk:17-slim
+
+# 设置工作目录
+WORKDIR /app
+
+# 从构建阶段复制 JAR 包
+COPY --from=build /app/target/*.jar app.jar
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# 暴露端口（根据服务调整）
+EXPOSE 8080
+
+# JVM 参数优化
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+
+# 启动应用
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+
+# ==================== 使用说明 ====================
+# 1. 将此文件复制到每个服务目录（如 pig-gateway/Dockerfile）
+# 2. 根据服务调整端口号
+# 3. 根据服务资源需求调整 JVM 参数
+# 4. Docker Compose 会自动使用这个 Dockerfile 构建镜像
+
+# ==================== 构建命令 ====================
+# 手动构建（通常不需要，Docker Compose 会自动构建）：
+# docker build -t pig-gateway .
+
+# ==================== 优化说明 ====================
+# 1. 多阶段构建：减小最终镜像大小
+# 2. 依赖缓存：只有 pom.xml 变化时才重新下载依赖
+# 3. 跳过测试：加快构建速度（测试应在 CI/CD 中完成）
+# 4. 使用 slim 镜像：减小镜像大小
