@@ -54,6 +54,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 菜单权限表服务实现类
@@ -61,6 +62,7 @@ import lombok.AllArgsConstructor;
  * @author lengleng
  * @date 2025/05/30
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
@@ -153,7 +155,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	 */
 	@Override
 	public List<Tree<Long>> filterMenu(Set<SysMenu> all, String type, Long parentId) {
-		List<TreeNode<Long>> collect = all.stream().filter(menuTypePredicate(type)).map(getNodeFunction()).toList();
+		List<TreeNode<Long>> collect = all.stream()
+			.filter(menuTypePredicate(type))
+			.filter(this::isValidMenu)
+			.map(getNodeFunction())
+			.toList();
 
 		Long parent = parentId == null ? CommonConstants.MENU_TREE_ROOT_ID : parentId;
 		return TreeUtil.build(collect, parent);
@@ -209,6 +215,32 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 			// 其他查询 左侧 + 顶部
 			return !MenuTypeEnum.BUTTON.getType().equals(vo.getMenuType());
 		};
+	}
+
+	/**
+	 * 验证菜单数据的有效性
+	 * @param menu 菜单对象
+	 * @return true 表示菜单有效，false 表示菜单无效
+	 */
+	private boolean isValidMenu(SysMenu menu) {
+		// 按钮权限不需要 path，直接返回 true
+		if (MenuTypeEnum.BUTTON.getType().equals(menu.getMenuType())) {
+			return true;
+		}
+
+		// 左侧菜单和顶部菜单必须有 path
+		if (MenuTypeEnum.LEFT_MENU.getType().equals(menu.getMenuType())
+				|| MenuTypeEnum.TOP_MENU.getType().equals(menu.getMenuType())) {
+			boolean hasPath = StrUtil.isNotBlank(menu.getPath());
+			if (!hasPath) {
+				log.warn("菜单数据无效: menuId={}, name={}, menuType={}, path为空", menu.getMenuId(), menu.getName(),
+						menu.getMenuType());
+			}
+			return hasPath;
+		}
+
+		// 其他类型默认返回 true
+		return true;
 	}
 
 }

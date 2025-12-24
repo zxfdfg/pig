@@ -88,19 +88,6 @@ public class ShopOrderController {
 	}
 
 	/**
-	 * 查询订单详情
-	 * @param id 订单ID
-	 * @return 订单信息
-	 */
-	@GetMapping("/{id}")
-	@Operation(summary = "查询订单详情", description = "根据ID查询订单详细信息")
-	@Parameter(name = "id", description = "订单ID", required = true)
-	public R<ShopOrder> getOrderDetail(@PathVariable Long id) {
-		ShopOrder order = shopOrderService.getOrderDetail(id);
-		return R.ok(order);
-	}
-
-	/**
 	 * 根据订单号查询订单
 	 * @param orderNo 订单号
 	 * @return 订单信息
@@ -110,6 +97,19 @@ public class ShopOrderController {
 	@Parameter(name = "orderNo", description = "订单号", required = true)
 	public R<ShopOrder> getOrderByNo(@PathVariable String orderNo) {
 		ShopOrder order = shopOrderService.getOrderByNo(orderNo);
+		return R.ok(order);
+	}
+
+	/**
+	 * 查询订单详情
+	 * @param id 订单ID
+	 * @return 订单信息
+	 */
+	@GetMapping("/{id}")
+	@Operation(summary = "查询订单详情", description = "根据ID查询订单详细信息")
+	@Parameter(name = "id", description = "订单ID", required = true)
+	public R<ShopOrder> getOrderDetail(@PathVariable Long id) {
+		ShopOrder order = shopOrderService.getOrderDetail(id);
 		return R.ok(order);
 	}
 
@@ -141,6 +141,40 @@ public class ShopOrderController {
 	public R<Boolean> confirmReceive(@PathVariable Long id) {
 		boolean result = shopOrderService.confirmReceive(id);
 		return R.ok(result);
+	}
+
+	/**
+	 * 商家发货
+	 * @param id 订单ID
+	 * @param params 物流信息
+	 * @return 是否成功
+	 */
+	@PutMapping("/ship/{id}")
+	@SysLog("商家发货")
+	@Operation(summary = "商家发货", description = "商家发货，更新订单状态为待收货")
+	@Parameter(name = "id", description = "订单ID", required = true)
+	public R<Boolean> shipOrder(@PathVariable Long id, @RequestBody Map<String, String> params) {
+		String logisticsCompany = params.get("logisticsCompany");
+		String logisticsNo = params.get("logisticsNo");
+		boolean result = shopOrderService.shipOrder(id, logisticsCompany, logisticsNo);
+		return R.ok(result);
+	}
+
+	/**
+	 * 商家查询所有订单（分页）
+	 * @param page 分页参数
+	 * @param status 订单状态
+	 * @param orderNo 订单号
+	 * @return 订单分页列表
+	 */
+	@GetMapping("/admin/page")
+	@Operation(summary = "商家查询所有订单", description = "商家后台查询所有用户的订单列表")
+	@Parameter(name = "status", description = "订单状态：0-待支付，1-待发货，2-待收货，3-已完成，4-已取消")
+	@Parameter(name = "orderNo", description = "订单号")
+	public R<IPage<ShopOrder>> getAdminOrderPage(Page<ShopOrder> page, @RequestParam(required = false) Integer status,
+			@RequestParam(required = false) String orderNo) {
+		IPage<ShopOrder> orderPage = shopOrderService.getAdminOrderPage(page, status, orderNo);
+		return R.ok(orderPage);
 	}
 
 }

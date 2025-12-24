@@ -85,4 +85,22 @@ public interface ShopOrderService extends IService<ShopOrder> {
 	 */
 	boolean paySuccess(String orderNo, Integer payType, String tradeNo);
 
+	/**
+	 * 商家发货
+	 * @param id 订单ID
+	 * @param logisticsCompany 物流公司
+	 * @param logisticsNo 物流单号
+	 * @return 是否成功
+	 */
+	boolean shipOrder(Long id, String logisticsCompany, String logisticsNo);
+
+	/**
+	 * 商家查询所有订单（分页）
+	 * @param page 分页参数
+	 * @param status 订单状态
+	 * @param orderNo 订单号
+	 * @return 订单分页列表
+	 */
+	IPage<ShopOrder> getAdminOrderPage(Page<ShopOrder> page, Integer status, String orderNo);
+
 }
